@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone Authentication</title>
+</head>
+<body>
+    <h1>Phone Authentication</h1>
+
+    <!-- Phone Number Input -->
+    <div>
+        <label for="phone-number">Phone Number (without country code):</label>
+        <input type="text" id="phone-number" placeholder="Enter phone number" />
+        <button id="send-verification-btn">Send Verification Code</button>
+    </div>
+
+    <!-- Verification Code Input -->
+    <div id="verification-section" style="display: none;">
+        <label for="verification-code">Enter Verification Code:</label>
+        <input type="text" id="verification-code" placeholder="Enter code" />
+        <button id="verify-code-btn">Verify Code</button>
+    </div>
+
+    <!-- Recaptcha Container -->
+    <div id="recaptcha-container"></div>
+
+    <div id="status-message"></div>
+
+    <!-- Firebase SDKs -->
+    <script nonce="<%-nonce%>" src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script nonce="<%-nonce%>" src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+
+    <script nonce="<%-nonce%>">
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCCBfEj2smTd_tWi5YWMMC2NC6qazU-njs", 
+            authDomain: "groscool-49709.firebaseapp.com",
+            projectId: "groscool-49709",
+            messagingSenderId: "728645803173",
+            appId: "1:728645803173:web:d908577eb05597f4d3814c"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // Initialize RecaptchaVerifier
+        const recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+            size: 'invisible',
+            callback: function(response) {
+                console.log('Recaptcha verified!');
+            }
+        });
+
+        recaptchaVerifier.render();
+
+        let confirmationResult; // Used to store verification result
+
+        // Handle sending the verification code
+        document.getElementById('send-verification-btn').addEventListener('click', async function() {
+            let phoneNumber = document.getElementById('phone-number').value;
+
+            // Prepend +91 if not already present
+            if (!phoneNumber.startsWith('+91')) {
+                phoneNumber = '+91' + phoneNumber;
+            }
+
+            try {
+                confirmationResult = await auth.signInWithPhoneNumber(phoneNumber, recaptchaVerifier);
+                document.getElementById('verification-section').style.display = 'block';
+                document.getElementById('status-message').innerText = "Verification code sent!";
+            } catch (error) {
+                console.error('Error sending verification code:', error);
+                document.getElementById('status-message').innerText = "Failed to send verification code.";
+            }
+        });
+
+        // Handle verifying the OTP
+        document.getElementById('verify-code-btn').addEventListener('click', async function() {
+            const verificationCode = document.getElementById('verification-code').value;
+
+            try {
+                const result = await confirmationResult.confirm(verificationCode);
+                const user = result.user;
+
+                // Send the verified user details to the backend if needed
+                const response = await fetch('/auth/verify-code', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phoneNumber: user.phoneNumber, uid: user.uid })
+                });
+
+                const backendResult = await response.json();
+                if (backendResult.success) {
+                    document.getElementById('status-message').innerText = "Phone number verified successfully!";
+                } else {
+                    document.getElementById('status-message').innerText = "Backend verification failed.";
+                }
+            } catch (error) {
+                console.error('Error verifying code:', error);
+                document.getElementById('status-message').innerText = "Failed to verify code.";
+            }
+        });
+    </script>
+</body>
+</html>

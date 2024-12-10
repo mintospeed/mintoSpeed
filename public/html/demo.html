@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delivery Information - GrosCool</title>
+  <!-- google font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Khula:wght@400;600;700;800&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+  <!-- alertboxAndLoader -->
+  <!-- <%- include('partials/alertboxAndLoader') %> -->
+
+  <section class="container">
+    <div class="container2">
+      <div class="logo"><a href="/">minto<span>Speed</span></a></div>
+      <header>Create Account</header>
+  
+  
+      <!--  -->
+      <form action="#" class="form">
+        <div class="input-box">
+          <label>Full Name</label>
+          <input type="text" id="fullName" placeholder="Enter full name" required />
+        </div>
+  
+        <div class="column" style="flex-wrap: nowrap;">
+          <div class="input-box">
+            <label>Email Address</label>
+            <input type="email" id="email" placeholder="Enter Email Address" required />
+          </div>
+  
+        </div>
+  
+  
+        <div class="column" style="flex-wrap: nowrap;">
+          <div class="input-box">
+            <label>Phone Number</label>
+            <input type="number" id="phone" placeholder="Enter phone number" required />
+          </div>
+  
+        </div>
+  
+  
+  
+        <div class="input-box address">
+          <label>Address</label>
+          <input type="text" id="streetAddress" placeholder="Enter street address" required />
+          <div class="column">
+            <input type="text" id="city" placeholder="Enter your city" required />
+            <input type="number" id="pincode" placeholder="Enter pincode" required />
+          </div>
+  
+        </div>
+  
+        <button class="orderBtn">Submit</button>
+        <p style="text-align: center; font-size: 14px; margin-top: 20px;">Already have an account? <a href=""
+            style="text-decoration: none;">Login</a></p>
+      </form>
+
+    </div>
+  </section>
+
+  <!-- <script nonce="<%-nonce%>">
+            document.addEventListener("DOMContentLoaded", () => {
+                const form = document.querySelector(".form");
+
+                form.addEventListener("submit", async (e) => {
+                    e.preventDefault(); // Prevent form submission for validation
+                    document.getElementById("loader_container").style.display = "flex";
+
+                    let isValid = true;
+
+                    // Fetch values using IDs
+                    const fullName = document.getElementById("fullName").value.trim();
+                    const email = document.getElementById("email").value.trim();
+                    // const emailOtp = document.getElementById("emailOtp").value.trim();
+                    const phone = document.getElementById("phone").value.trim();
+                    // const phoneOtp = document.getElementById("phoneOtp").value.trim();
+                    const streetAddress = document.getElementById("streetAddress").value.trim();
+                    const city = document.getElementById("city").value.trim();
+                    const pincode = document.getElementById("pincode").value.trim();
+                    // const district = document.getElementById("district").value;
+                    // const state = document.getElementById("state").value;
+                    const orderId = document.getElementById("orderId").value;
+                    const isUserExit = document.getElementById("isUserExit").value;
+                    const paymentMode = document.querySelector('input[name="pmode"]:checked').value;
+
+
+
+                    let validateInput = (input) => typeof input === 'string' && /^[a-zA-Z0-9_\- &,.]+$/.test(input);
+                    let validateNumberInput = (input, length) => typeof input === 'string' && /^\d+$/.test(input) && input.length === length;
+                    let validateEmail = (input) => typeof input === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input);
+                    let validatePaymentMode = (input) => {
+                        return typeof input === 'string' && ['online', 'cod'].includes(input.toLowerCase());
+                    };
+
+
+                    // Full Name Validation
+                    if (!validateInput(fullName)) {
+                        showAlert("Full Name is required", "negative");
+                        document.getElementById("loader_container").style.display = "none";
+                        isValid = false;
+                    }
+
+                    // Email Validation
+                    if (!validateEmail(email)) {
+                        showAlert("Please enter a valid email address", "negative");
+                        isValid = false;
+                        document.getElementById("loader_container").style.display = "none";
+
+                    }
+
+                    // if (!validateInput(orderId) || !validateInput(isUserExit)) {
+                    //     showAlert("Something went wrong to get some data. Please refresh the page and try again.", "negative");
+                    //     isValid = false;
+                    //     document.getElementById("loader_container").style.display = "none";
+
+                    // }
+
+                    // if (isUserExit == "false") {
+                    //     // OTP Validations (6 digits)
+                    //     if (!validateNumberInput(emailOtp, 6)) {
+                    //         showAlert("Please enter a 6-digit OTP for Email", "negative");
+                    //         isValid = false;
+                    //         document.getElementById("loader_container").style.display = "none";
+
+                    //     }
+
+                    //     if (!validateNumberInput(phoneOtp, 6)) {
+                    //         showAlert("Please enter a 6-digit OTP for Phone", "negative");
+                    //         isValid = false;
+                    //         document.getElementById("loader_container").style.display = "none";
+
+                    //     }
+                    // }
+
+                    // Phone Number Validation (10 digits)
+                    if (!validateNumberInput(phone, 10)) {
+                        showAlert("Please enter a valid 10-digit phone number", "negative");
+                        isValid = false;
+                        document.getElementById("loader_container").style.display = "none";
+                    }
+
+                    // Address Validation
+                    if (!validateInput(streetAddress)) {
+                        showAlert("Street address must be at least 5 characters", "negative");
+                        isValid = false;
+                        document.getElementById("loader_container").style.display = "none";
+                    }
+
+                    if (!validateInput(city)) {
+                        showAlert("City is required", "negative");
+                        isValid = false;
+                        document.getElementById("loader_container").style.display = "none";
+                    }
+
+                    // if (!validateInput(state)) {
+                    //     showAlert("State is required", "negative");
+                    //     isValid = false;
+                    //     document.getElementById("loader_container").style.display = "none";
+                    // }
+
+                    // Pincode Validation (6 digits)
+                    if (!validateNumberInput(pincode, 6)) {
+                        showAlert("Please enter a valid 6-digit pincode", "negative");
+                        isValid = false;
+                        document.getElementById("loader_container").style.display = "none";
+                    }
+
+                    // District Validation
+                    // if (!validateInput(district)) {
+                    //     showAlert("Please select a district", "negative");
+                    //     isValid = false;
+                    //     document.getElementById("loader_container").style.display = "none";
+                    // }
+
+                    // Payment Mode Validation
+                    if (!validatePaymentMode(paymentMode)) {
+                        showAlert("Please select a payment mode", "negative");
+                        isValid = false;
+                        document.getElementById("loader_container").style.display = "none";
+                    }
+
+                    if (isValid) {
+                        // Collect data from the form
+                        const formData = {
+                            fullName, email, phone, streetAddress, city, pincode, orderId, paymentMode
+                        };
+                        console.log("formData : " + formData);
+
+
+                        // Send data to backend using fetch
+                        try {
+                            const response = await fetch('/orderForm/order', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(formData)
+                            });
+
+                            const result = await response.json();
+
+                            if (result.type == "positive") {
+                                showAlert('Order placed successfully! Redirecting to profile page.', "positive");
+                                
+
+                                setTimeout(() => {
+                                    window.location.href = '/profile'; 
+                                }, 4000); 
+
+                            } else if (result.type == "negative") {
+                                showAlert("Something went wrong. Please again order the item.", "negative");
+                                setTimeout(() => {
+                                    window.location.href = '/cart'; 
+                                }, 5000);                             }
+                        } catch (error) {
+                            console.error('Error:', error);
+                            document.getElementById("loader_container").style.display = "none";
+                            showAlert('An error occurred while placing the order. Please try again.', "negative");
+                        }
+                    }
+                });
+            });
+        </script> -->
+
+
+
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Open Sans', sans-serif;
+    }
+
+    body {
+      background-color: rgb(243, 243, 243);
+    }
+
+    div.logo {
+      margin: 15px;
+      text-align: center;
+    }
+
+    div.logo>a {
+      text-decoration: none;
+      color: #0bb744;
+      font-weight: 800;
+      font-size: 22px;
+    }
+
+    div.logo>a span {
+      color: rgb(19, 19, 19);
+    }
+
+    .container{
+      position: fixed;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: auto;
+    }
+
+    .container2 {
+      max-width: 550px;
+      width: 550px;
+      height: fit-content;
+      background: #fff;
+      padding: 20px;
+      margin: 10px;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .container2 header {
+      font-size: 1.1rem;
+      color: #5a5a5a;
+      font-weight: 700;
+      text-align: center;
+      padding: 5px 10px 0 10px;
+    }
+
+    .container2 .form {
+      margin-top: 10px;
+    }
+
+    .form .input-box {
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .input-box label {
+      color: #333;
+      font-size: 13px;
+    }
+
+    .form :where(.input-box input, .select-box) {
+      position: relative;
+      height: 40px;
+      width: 100%;
+      outline: none;
+      font-size: 13px;
+      color: #6b6b6b;
+      margin-top: 5px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 0 10px;
+      background-color: #fafafa;
+    }
+
+    .input-box input:focus {
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    .form .column {
+      display: flex;
+      column-gap: 15px;
+    }
+
+    .address :where(input, .select-box) {
+      margin-top: 15px;
+    }
+
+    .select-box select {
+      height: 100%;
+      width: 100%;
+      outline: none;
+      border: none;
+      color: #525252;
+      font-size: .9rem;
+      background-color: #f6f6f6;
+
+    }
+
+    .orderBtn,
+    .verifyOtpBtn,
+    .timer {
+      height: 51px;
+      width: 100%;
+      color: #fff;
+      font-size: .9rem;
+      font-weight: 400;
+      margin-top: 35px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: rgb(77, 215, 67);
+    }
+
+    .verifyOtpBtn,
+    .timer {
+      margin-top: 32px;
+      height: 38px;
+      width: 100px;
+    }
+
+    .timer {
+      background-color: transparent;
+      color: black;
+      border: none;
+    }
+
+    .form button:hover {
+      background: rgb(19, 172, 40);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .visible {
+      display: block;
+    }
+
+    .visible-flex {
+      display: flex !important;
+    }
+
+    /*Responsive*/
+    @media screen and (max-width: 400px) {
+      .form .column {
+        flex-wrap: wrap;
+      }
+
+      .container2 {
+        padding: 10px;
+      }
+    }
+  </style>
+</body>
+
+</html>

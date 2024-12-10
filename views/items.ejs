@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= favName %> - Category | mintoSpeed</title>
+    <!-- google font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Khula:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <!-- google icon -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,700,0,0" />
+    <!--Font awesome icon-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <script nonce="<%-nonce%>" src="https://kit.fontawesome.com/6ac775d87f.js" crossorigin="anonymous"></script>
+    <!-- jQuery -->
+    <script nonce="<%-nonce%>" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+    <style>
+        * {
+            user-select: none;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        body {
+            position: relative;
+            padding: 0;
+            margin: 0;
+            background-color: rgb(243, 243, 243);
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        a {
+            text-decoration: none;
+            color: black;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            text-transform: capitalize;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .align-center {
+            align-items: center;
+        }
+
+        .justify-center {
+            justify-content: center;
+        }
+
+        .justify-around {
+            justify-content: space-around;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            padding: 8px 18px;
+            font-size: 15px;
+            background-color: rgb(0, 0, 0);
+            color: white;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- navbar -->
+    <%- include('partials/navbar') %>
+
+        <!-- alertboxAndLoader -->
+        <%- include('partials/alertboxAndLoader') %>
+
+
+
+            <!-- mainhead -->
+            <div>
+                <% if (typeof selectedCategory !== 'undefined' && selectedCategory.length> 0) { %>
+                <% selectedCategory.forEach(category=> { %>
+                    <!-- Grocery item section -->
+                    <section class="grocery" id="selectedCat" data-category="<%= category.id %>">
+                        <div>
+                            <!-- Category Title -->
+                            <h2 class="grocery_head"><span id="backBtn" style="margin-right: 7px; padding: 0 4px;"><i class="fa-solid fa-arrow-left"></i></span><%= category.id %></h2>
+
+                            <!-- Subcategory Navigation -->
+                            <div class="subCategoryDIv">
+                                <div class="left_btn"><i class="fa-solid fa-chevron-left"></i></div>
+                                <div class="right_btn"><i class="fa-solid fa-chevron-right"></i>
+                                </div>
+                                <div class="content2" style="padding: 0 5px;">
+                                    <div class="content3">
+                                        <% category.subcategory.forEach((subcategory, index)=> { %>
+                                            <!-- Subcategory Button, highlight the first subcategory as selected -->
+                                            <div class="grocery_type subCatElement <%= index === 0 ? 'selected' : '' %>"
+                                                data-subCategoryBtn="<%= subcategory.id %>"><%= subcategory.id %></div>
+                                            <% }) %>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Items Container for Selected Subcategory -->
+                            <div class="grocery_items_container">
+                                <% category.subcategory.forEach((subcategory, index)=> { %>
+                                    <!-- Display items only for the first subcategory by default -->
+                                    <% if (index===0) { %>
+                                        <div class="grocery_items" id="grocery_items_<%= subcategory.id %>"
+                                            data-subCategory="<%= subcategory.id %>">
+
+                                            <% subcategory.items.forEach(item=> { %>
+                                                <div class="grocery_item" data-packed="<%= item.packed %>"
+                                                    data-itemCategory="<%= category.id %>"
+                                                    data-itemSubCategory="<%= subcategory.id %>">
+
+                                                    <div class="item_img">
+                                                        <img src="<%= item.image_url %>" alt="img" />
+                                                    </div>
+                                                    <p class="item_name"><%= item.id %></p>
+                                                    <p class="item_min_volume"><%= item.minVol %></p>
+                                                    <p class="item_max_volume"><%= item.maxVol %></p>
+
+                                                    <div class="item_volume">
+                                                        <p class="item_weight" style="margin: 0;"><%= item.volume %></p>
+                                                        <div class="item_volume_options">
+                                                            <% if (item.packed) { %>
+                                                                <!-- item is packed -->
+                                                                <% } else { %>
+                                                                    <% item.options.forEach(option=> { %>
+                                                                        <div class="item_volume_option">
+                                                                            <p class="item_option_weight"><%= option.weight %></p>
+                                                                            <p class="item_option_price"><%= option.price %></p>
+                                                                        </div>
+                                                                        <% }) %>
+                                                                            <% } %>
+
+                                                                                <!-- custom option -->
+                                                                                <div class="item_volume_custom_option">
+                                                                                    <p
+                                                                                        class="item_volume_custom_option_head">
+                                                                                        Custom</p>
+                                                                                    <div
+                                                                                        class="item_volume_custom_option_input_div">
+                                                                                        <% if (item.packed) { %>
+                                                                                            <!-- If item is packed, show text "pieces" -->
+                                                                                            <input type="number"
+                                                                                                class="item_volume_input_number"
+                                                                                                placeholder="Qty"
+                                                                                                min="0" step="1" />
+                                                                                            <div
+                                                                                                class="item_volume_custom_option_for_pieces">
+                                                                                                pcs</div>
+                                                                                            <% } else { %>
+                                                                                                <input type="number"
+                                                                                                    class="item_volume_input_number"
+                                                                                                    placeholder="Qty"
+                                                                                                    min="0" />
+                                                                                                <div
+                                                                                                    class="item_volume_custom_option_for_kggm">
+                                                                                                    <label><input
+                                                                                                            type="radio"
+                                                                                                            name="kggm"
+                                                                                                            checked
+                                                                                                            value="kg">kg</label>
+                                                                                                    <label><input
+                                                                                                            type="radio"
+                                                                                                            name="kggm"
+                                                                                                            value="gm">gm</label>
+                                                                                                </div>
+                                                                                                <% } %>
+                                                                                    </div>
+                                                                                    <p class="item_volume_input_price">0</p>
+                                                                                    <button class="item_volume_custom_option_done_btn">Done</button>
+                                                                                </div>
+                                                        </div>
+                                                    </div>
+                                                    <p class="item_price">
+                                                        <%= item.price %>
+                                                    </p>
+                                                    <button class="item_add_btn">Add</button>
+                                                </div>
+                                                <% }) %>
+                                        </div>
+                                        <% } %>
+                                            <% }) %>
+                            </div>
+
+
+                        </div>
+                    </section>
+                    <% }) %>
+                    <% } else { %>
+                        <p style="text-align: center; margin-top: 50px; margin-bottom: 100px;">No item found.</p>
+                    <% } %>
+            </div>
+
+
+            <!-- categories -->
+
+            <section class="content">
+                <% if (typeof categoryNames !== 'undefined' && categoryNames.length> 0) { %>
+                <div class="">
+                    <h2 class="content_head">select product by categories</h2>
+
+                    <div class="content1">
+                        <!-- leftright btn -->
+                        <div class="left_btn" id="leftContentBtn"><i class="fa-solid fa-chevron-left"></i></div>
+                        <div class="right_btn" id="rightContentBtn"><i class="fa-solid fa-chevron-right"></i></div>
+                        <div class="content2">
+                            <!-- contact list -->
+                            <div class="content3">
+                                <% categoryNames.forEach(category=> { %>
+                                <div class="grocery_type">
+                                    <a href="/items?i=<%= category.value %>">
+                                        <img src="https://storage.googleapis.com/groscool-49709.appspot.com/images%2F8d8ad9d2-d295-4835-a095-ff6dcdf11bab-g1.png" alt="img" />
+                                        <p><%= category.key %></p>
+                                    </a>
+                                </div>
+                                <% }) %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+            </section>
+
+            <style>
+                section.content {
+                    height: fit-content;
+                    padding: 20px 3%;
+                    width: 100%;
+                    /* background-color: whitesmoke; */
+                }
+
+                .content_head {
+                    font-size: 18px;
+                    font-weight: 700;
+                    font-family: 'Khula';
+                    margin-bottom: 0;
+                }
+
+                div.content1,
+                div.subCategoryDIv,
+                div.services_con0 {
+                    position: relative;
+                }
+
+                div.content2,
+                div.services_con1 {
+                    margin-top: 5px;
+                    overflow-x: scroll;
+                    width: 100%;
+                    scroll-snap-type: x mandatory;
+                }
+
+                div.services_con1 {
+                    margin-top: 0;
+                }
+
+                div.content3,
+                div.services_con {
+                    display: inline-flex;
+                }
+
+
+                div.content2::-webkit-scrollbar,
+                div.services_con1::-webkit-scrollbar {
+                    display: none;
+                }
+
+                div.content2 {
+                    -ms-overflow-style: none;
+                    scrollbar-width: none;
+                }
+
+
+                div.left_btn,
+                div.right_btn {
+                    cursor: pointer;
+                    position: absolute;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    font-size: 13px;
+                    z-index: 10000;
+                    color: rgb(90, 89, 89);
+                    /* background-color: rgba(196, 196, 196, 0.6); */
+                    height: 20px;
+                    width: 20px;
+                    padding: 2px;
+                    border-radius: 50%;
+                    text-align: center;
+                    line-height: 1.2;
+                }
+
+                div.left_btn {
+                    left: -8px;
+                }
+
+                div.right_btn {
+                    right: -15px;
+                }
+
+                .grocery_type {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    text-transform: capitalize;
+                    cursor: pointer;
+                    text-align: center;
+                    margin: 10px;
+                    padding: 10px;
+                    height: 110px;
+                    width: 140px;
+                    border-radius: 10px;
+                    background-color: rgb(220, 220, 220);
+                    box-shadow: 0px 5px 4px -4px rgba(57, 76, 96, .15);
+                }
+
+
+                .grocery_type img {
+                    height: 43px;
+                    width: fit-content;
+                }
+
+                .grocery_type p {
+                    font-weight: 700;
+                    font-size: 13px;
+                    margin: 6px 0;
+                }
+
+                @media screen and (max-width: 500px) {
+                    .grocery_type {
+                        margin: 5px;
+                        padding: 7px;
+                        height: 90px;
+                        width: 110px;
+                    }
+
+                    .grocery_type img {
+                        height: 35px;
+                    }
+
+                    .grocery_type p {
+                        font-size: 11px;
+                        margin: 4px 0;
+                    }
+                }
+            </style>
+
+<script nonce="<%-nonce%>">
+    const backBtn = document.getElementById('backBtn');
+
+// Add a click event listener to the button
+backBtn.addEventListener('click', () => {
+    window.history.back();
+});
+
+    // Detect if the device supports touch events
+    function isTouchDevice() {
+        return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    }
+
+    // Function to toggle button visibility based on scroll position
+    function updateButtonVisibility(slider, leftBtn, rightBtn) {
+        const maxScrollLeft = slider.scrollWidth - slider.clientWidth;
+        if (slider.scrollLeft <= 0) {
+            leftBtn.style.display = 'none'; 
+        } else {
+            leftBtn.style.display = 'block'; 
+        }
+
+        if (slider.scrollLeft >= maxScrollLeft) {
+            rightBtn.style.display = 'none'; 
+        } else {
+            rightBtn.style.display = 'block'; 
+        }
+    }
+
+    // Apply functionality for each section
+    document.querySelectorAll('.content').forEach(section => {
+        const slider = section.querySelector('.content2');
+        const leftBtn = section.querySelector('.left_btn');
+        const rightBtn = section.querySelector('.right_btn');
+        const deviceWidth = window.innerWidth; // Get the width of the viewport
+
+        // Hide buttons initially if on touch devices
+        if (isTouchDevice()) {
+            if (leftBtn) leftBtn.style.display = 'none';
+            if (rightBtn) rightBtn.style.display = 'none';
+        } else {
+            // Initialize button visibility
+            updateButtonVisibility(slider, leftBtn, rightBtn);
+        }
+
+        slider.addEventListener('scroll', () => {
+            updateButtonVisibility(slider, leftBtn, rightBtn);
+        });
+
+        if (leftBtn) {
+            leftBtn.addEventListener('click', () => {
+                slider.scrollLeft -= deviceWidth * 0.6; 
+            });
+        }
+
+        if (rightBtn) {
+            rightBtn.addEventListener('click', () => {
+                slider.scrollLeft += deviceWidth * 0.6; // Scroll right by 60% of device width
+            });
+        }
+
+        // Recheck button visibility on window resize
+        window.addEventListener('resize', () => {
+            updateButtonVisibility(slider, leftBtn, rightBtn);
+        });
+    });
+</script>
+
+
+<% if (typeof categories !== 'undefined' && categories.length> 0) { %>
+
+            <div id="grocery-sections">
+                <% categories.forEach(category=> { %>
+                    <!-- Grocery item section -->
+                    <section class="grocery" data-category="<%= category.id %>">
+                        <div>
+                            <!-- Category Title -->
+                            <h2 class="grocery_head"><%= category.id %></h2>
+
+                            <!-- Subcategory Navigation -->
+                            <div class="subCategoryDIv">
+                                <div class="left_btn"><i class="fa-solid fa-chevron-left"></i></div>
+                                <div class="right_btn"><i class="fa-solid fa-chevron-right"></i>
+                                </div>
+                                <div class="content2" style="padding: 0 5px;">
+                                    <div class="content3">
+                                        <% category.subcategories.forEach((subcategory, index)=> { %>
+                                            <!-- Subcategory Button, highlight the first subcategory as selected -->
+                                            <div class="grocery_type subCatElement <%= index === 0 ? 'selected' : '' %>"
+                                                data-subCategoryBtn="<%= subcategory.id %>"><%= subcategory.id %></div>
+                                            <% }) %>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Items Container for Selected Subcategory -->
+                            <div class="grocery_items_container">
+                                <% category.subcategories.forEach((subcategory, index)=> { %>
+                                    <!-- Display items only for the first subcategory by default -->
+                                    <% if (index===0) { %>
+                                        <div class="grocery_items" id="grocery_items_<%= subcategory.id %>"
+                                            data-subCategory="<%= subcategory.id %>">
+
+                                            <% subcategory.items.forEach(item=> { %>
+                                                <div class="grocery_item" data-packed="<%= item.packed %>"
+                                                    data-itemCategory="<%= category.id %>"
+                                                    data-itemSubCategory="<%= subcategory.id %>">
+
+                                                    <div class="item_img">
+                                                        <img src="<%= item.image_url %>" alt="img" />
+                                                    </div>
+                                                    <p class="item_name"><%= item.id %></p>
+                                                    <p class="item_min_volume"><%= item.minVol %></p>
+                                                    <p class="item_max_volume"><%= item.maxVol %></p>
+
+                                                    <div class="item_volume">
+                                                        <p class="item_weight" style="margin: 0;"><%= item.volume %></p>
+                                                        <div class="item_volume_options">
+                                                            <% if (item.packed) { %>
+                                                                <!-- item is packed -->
+                                                                <% } else { %>
+                                                                    <% item.options.forEach(option=> { %>
+                                                                        <div class="item_volume_option">
+                                                                            <p class="item_option_weight"><%= option.weight %></p>
+                                                                            <p class="item_option_price"><%= option.price %></p>
+                                                                        </div>
+                                                                        <% }) %>
+                                                                            <% } %>
+
+                                                                                <!-- custom option -->
+                                                                                <div class="item_volume_custom_option">
+                                                                                    <p
+                                                                                        class="item_volume_custom_option_head">
+                                                                                        Custom</p>
+                                                                                    <div
+                                                                                        class="item_volume_custom_option_input_div">
+                                                                                        <% if (item.packed) { %>
+                                                                                            <!-- If item is packed, show text "pieces" -->
+                                                                                            <input type="number"
+                                                                                                class="item_volume_input_number"
+                                                                                                placeholder="Qty"
+                                                                                                min="0" step="1" />
+                                                                                            <div
+                                                                                                class="item_volume_custom_option_for_pieces">
+                                                                                                pcs</div>
+                                                                                            <% } else { %>
+                                                                                                <input type="number"
+                                                                                                    class="item_volume_input_number"
+                                                                                                    placeholder="Qty"
+                                                                                                    min="0" />
+                                                                                                <div
+                                                                                                    class="item_volume_custom_option_for_kggm">
+                                                                                                    <label><input
+                                                                                                            type="radio"
+                                                                                                            name="kggm"
+                                                                                                            checked
+                                                                                                            value="kg">kg</label>
+                                                                                                    <label><input
+                                                                                                            type="radio"
+                                                                                                            name="kggm"
+                                                                                                            value="gm">gm</label>
+                                                                                                </div>
+                                                                                                <% } %>
+                                                                                    </div>
+                                                                                    <p class="item_volume_input_price">0</p>
+                                                                                    <button class="item_volume_custom_option_done_btn">Done</button>
+                                                                                </div>
+                                                        </div>
+                                                    </div>
+                                                    <p class="item_price">
+                                                        <%= item.price %>
+                                                    </p>
+                                                    <button class="item_add_btn">Add</button>
+                                                </div>
+                                                <% }) %>
+                                        </div>
+                                        <% } %>
+                                            <% }) %>
+                            </div>
+
+
+                        </div>
+                    </section>
+                    <% }) %>
+
+                        <div id="load-more-trigger"></div>
+                        <!-- Target element for triggering additional content load -->
+
+            </div>
+            <% } else { %>
+                <p style="text-align: center; margin-top: 50px; margin-bottom: 100px;">No item found.</p>
+            <% } %>
+
+            <!-- loading sections showing -->
+             <div class="showingLoading">
+                <div class="loader" id="loadingRotatorForSections"></div>
+             </div>
+
+
+
+             <!-- scroll -->
+             <script nonce="<%-nonce%>">
+                // Detect if the device supports touch events
+                function isTouchDevice() {
+                    return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+                }
+          
+                // Function to initialize scroll functionality for a single section
+                function initializeScrollFunctionality(section) {
+                    const slider = section.querySelector('.content2');
+                    const leftBtn = section.querySelector('.left_btn');
+                    const rightBtn = section.querySelector('.right_btn');
+                    const deviceWidth = window.innerWidth; // Get the width of the viewport
+            
+                    if (!slider || !leftBtn || !rightBtn) return;
+            
+                    // Hide buttons initially if on touch devices
+                    if (isTouchDevice()) {
+                        leftBtn.style.display = 'none';
+                        rightBtn.style.display = 'none';
+                    } else {
+                        // Initialize button visibility
+                        updateButtonVisibility(slider, leftBtn, rightBtn);
+                    }
+            
+                    // Add scroll event listener to update button visibility
+                    slider.addEventListener('scroll', () => {
+                        updateButtonVisibility(slider, leftBtn, rightBtn);
+                    });
+            
+                    // Add click functionality for scrolling
+                    leftBtn.addEventListener('click', () => {
+                        slider.scrollLeft -= deviceWidth * 0.6; // Scroll left by 60% of device width
+                    });
+            
+                    rightBtn.addEventListener('click', () => {
+                        slider.scrollLeft += deviceWidth * 0.6; // Scroll right by 60% of device width
+                    });
+            
+                    // Recheck button visibility on window resize
+                    window.addEventListener('resize', () => {
+                        updateButtonVisibility(slider, leftBtn, rightBtn);
+                    });
+                }
+            
+              </script>
+            
+
+
+            <style>
+                .showingLoading{
+                    height: 200px;
+                    width: 100%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+
+                .loader {
+            border: 7px solid #b6b5b5;
+            border-radius: 50%;
+            border-top: 7px solid #0f952e;
+            width: 40px;
+            height: 40px;
+            -webkit-animation: spin 1s linear infinite;
+            /* Safari */
+            animation: spin 1s linear infinite;
+        }
+
+        /* Safari */
+        @-webkit-keyframes spin {
+            0% {
+                -webkit-transform: rotate(0deg);
+            }
+
+            100% {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+                .hidden {
+                    display: none;
+                }
+
+                .item_volume_custom_option {
+                    padding: 3px 7px;
+                    font-size: 14px;
+                    cursor: default;
+                }
+
+                .item_volume_custom_option p {
+                    margin: 6px 0;
+                }
+
+                .item_volume_custom_option_head {
+                    font-size: 13px;
+                    font-weight: 600;
+                    padding-bottom: 3px;
+                }
+
+                .item_volume_custom_option_input_div {
+                    display: flex;
+                    align-items: center;
+                }
+
+                .item_volume_input_number {
+                    padding: 2px;
+                    font-size: 12px;
+                    width: 50px;
+                    height: 20px;
+                }
+
+                .item_volume_input_number::placeholder {
+                    font-size: 10px;
+                    padding: 2px;
+                }
+
+                /* Chrome, Safari, Edge, Opera */
+                input[type="number"]::-webkit-outer-spin-button,
+                input[type="number"]::-webkit-inner-spin-button {
+                    -webkit-appearance: none;
+                    margin: 0;
+                }
+
+                .item_volume_custom_option_for_pieces {
+                    font-size: 13px;
+                    margin-left: 5px;
+                }
+
+
+                .item_volume_custom_option_for_kggm {
+                    display: flex;
+                    align-items: center;
+                    flex-wrap: nowrap;
+                }
+
+                .item_volume_custom_option_for_kggm input {
+                    height: 10px;
+                    width: 10px;
+                    margin: 4px 2px 0 5px;
+                }
+
+                .item_volume_custom_option_for_kggm label {
+                    font-size: 12px;
+                    margin-left: 5px;
+                }
+
+                .item_volume_custom_option_done_btn {
+                    font-size: 10px;
+                    padding: 5px 8px;
+                    border-radius: 5px;
+                    font-weight: 600;
+                    margin: 6px 0 3px 1px;
+                }
+
+                section.grocery {
+                    height: fit-content;
+                    padding: 0px 3%;
+                    padding-bottom: 15px;
+                    width: 100%;
+                    /* background-color: whitesmoke; */
+                }
+
+                .grocery_items {
+                    display: flex;
+                    flex-wrap: wrap;
+                    min-height: 300px;
+                }
+
+                .grocery_head {
+                    font-size: 16px;
+                    margin-bottom: 15px;
+                    margin-top: 25px;
+                }
+
+                .subCategoryDIv {
+                    margin-bottom: 12px;
+                }
+
+                .subCatElement {
+                    margin: 5px;
+                    padding: 6px 22px;
+                    height: fit-content;
+                    width: fit-content;
+                    border-radius: 50px;
+                    font-weight: 600;
+                    font-size: 13px;
+                    background-color: transparent;
+                    color: black;
+                    border: 2px solid rgb(193, 193, 193);
+                    box-shadow: none;
+                }
+
+                .subCatSelected {
+                    background-color: #404040;
+                    color: white;
+                    border-color: #404040;
+                }
+
+
+                .grocery_item {
+                    position: relative;
+                    cursor: pointer;
+                    margin: 10px;
+                    padding: 17px 13px;
+                    height: fit-content;
+                    flex-grow: 1;
+                    flex-shrink: 1;
+                    flex-basis: 200px;
+                    max-width: 250px;
+                    border-radius: 2px;
+                    /* background-color: rgb(248, 248, 248); */
+                    background-color: rgb(231, 231, 231);
+                    border: 1px solid rgb(221, 221, 221);
+                    box-shadow: 0px 5px 4px -4px rgba(57, 76, 96, .15);
+                }
+
+                @media screen and (max-width: 700px) {
+                    section.grocery {
+                        padding: 0px 10px;
+                    }
+
+                    .content_head {
+                        font-size: 15px;
+                    }
+
+                    .grocery_head {
+                        margin-left: 10px;
+                        font-size: 14px !important;
+                    }
+
+                    .grocery_item {
+                        flex-basis: 150px;
+                        margin: 5px;
+                        padding: 13px 9px;
+                    }
+                }
+
+                @media screen and (max-width: 400px) {
+                    section.grocery {
+                        padding: 0px 5px;
+                    }
+                }
+
+
+                .item_img {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 150px;
+                    width: 100%;
+                }
+
+                .grocery_item img {
+                    max-height: 100%;
+                    max-width: 100%;
+                    object-fit: cover;
+                }
+
+
+                .item_name {
+                    text-transform: capitalize;
+                    font-size: 14px;
+                    font-weight: 600;
+                    line-height: 1.2;
+                    padding: 0;
+                    margin: 25px 0 5px 5px;
+                    font-family: 'Khula';
+                }
+
+                .item_min_volume,
+                .item_max_volume {
+                    display: none !important;
+                }
+
+                .item_volume,
+                .item_volume_options {
+                    cursor: pointer;
+                    width: 100%;
+                    position: relative;
+                    background-color: rgb(245, 244, 244);
+                    border: 2px solid rgb(204, 203, 203);
+                    margin: 0px 0;
+                    padding: 3px 5px;
+                    font-size: 13px;
+                    border-radius: 5px;
+                }
+
+                .item_volume_options {
+                    display: none;
+                    z-index: 1000;
+                    position: absolute;
+                    top: 0px;
+                    left: 0;
+                    padding: 0;
+                }
+
+                .item_volume_options.show {
+                    display: block;
+                }
+
+                .item_volume_option {
+                    cursor: pointer;
+                    background-color: white;
+                    padding: 3px 5px;
+                    margin: 2px;
+                }
+
+                .item_volume::after {
+                    position: absolute;
+                    font-family: 'Font Awesome 5 Free';
+                    /* or 'Font Awesome 6 Free' */
+                    content: '\f078';
+                    font-weight: 900;
+                    font-size: 12px;
+                    right: 10px;
+                    top: 7px;
+                }
+
+                .item_price,
+                .item_option_price,
+                .item_option_weight {
+                    margin: 10px 0 0 5px;
+                    font-size: 13px;
+                    position: relative;
+                    font-weight: 600;
+                }
+
+                .item_option_weight {
+                    font-weight: 500;
+                    font-size: 13px;
+                }
+
+                .item_option_price {
+                    font-size: 14px;
+                    margin: 5px 0 0 5px;
+                }
+
+                .item_price::before,
+                .item_option_price::before,
+                .item_volume_input_price::before {
+                    content: "₹";
+                }
+
+                .item_add_btn {
+                    width: 100%;
+                    height: 30px;
+                    padding: 5px;
+                    border-radius: 30px;
+                    margin-top: 15px;
+                    background-color: #02ad3b;
+                }
+            </style>
+
+
+
+            <!-- load sub category element -->
+            <script nonce="<%-nonce%>">
+                document.addEventListener('DOMContentLoaded', function () {
+                    const grocerySections = document.querySelectorAll('.grocery');
+                    let sectionSubCategories = {};
+
+                    function initializeSubCategories(section) {
+                        console.log("initializeSubCategories 1");
+                        const subCategoryButtons = section.querySelectorAll('.subCatElement');
+                        const groceryItemsContainer = section.querySelector('.grocery_items_container');
+                        const category = section.getAttribute('data-category');
+                        let newItemElements1 = [];
+                        let newItemElements2 = [];
+                        let activeButton = null; // To track the currently selected button
+
+                        if (!sectionSubCategories[category]) {
+                            console.log("initializeSubCategories 2");
+                            sectionSubCategories[category] = {};
+                        }
+
+                        function initializeSectionSubCategories(firstSubCategory) {
+                            console.log("initializeSubCategories 3");
+                            sectionSubCategories[category][firstSubCategory] = section.querySelector('.grocery_items');
+                        }
+
+                        // Function to fetch data from the backend using POST request
+                        async function fetchGroceryItems(subCategory) {
+                            console.log(`Starting fetching items for ${category} -> ${subCategory}`);
+                            document.getElementById("loader_container").style.display = "flex";
+
+                            // Check if this subCategory already exists in the DOM
+                            if (sectionSubCategories[category][subCategory]) {
+                                console.log(`Subcategory ${subCategory} already exists. Showing it.`);
+                                document.getElementById("loader_container").style.display = "none";
+                                showSubCategory(subCategory);
+                                return;
+                            }
+
+                            try {
+                                fetch('/get_grocery_items', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({ category: category, subCategory: subCategory })
+                                }).then(response => {
+                                    if (!response.ok) {
+                                        showAlert('Failed to fetch grocery items.', 'negative');
+                                        document.getElementById("loader_container").style.display = "none";
+                                        return;
+                                    }
+                                    return response.json();
+                                })
+                                    .then(data => {
+                                        let items = data.items;
+                                        console.log(items);
+                                        const subCategoryDiv = document.createElement('div');
+                                        subCategoryDiv.classList.add('grocery_items');
+                                        subCategoryDiv.setAttribute('data-subCategory', subCategory);
+
+                                        document.getElementById("loader_container").style.display = "none";
+
+                                        // Now we can iterate over the array and create elements
+                                        items.forEach(item => {
+                                            const itemDiv = document.createElement('div');
+                                            itemDiv.classList.add('grocery_item');
+                                            itemDiv.setAttribute('data-packed', item.packed);
+                                            itemDiv.setAttribute('data-itemCategory', category);
+                                            itemDiv.setAttribute('data-itemSubCategory', subCategory);
+                                            console.log("item" + item);
+                                            console.log("itemname" + item.name);
+
+                                            itemDiv.innerHTML = `
+                                        <div class="item_img">
+                                            <img src="${item.image_url}" alt="img" />
+                                        </div>
+                                        <p class="item_name">${item.name}</p>
+                                        <p class="item_min_volume">${item.minVol}</p>
+                                        <p class="item_max_volume">${item.maxVol}</p>
+                                        <div class="item_volume">
+                                            <p class="item_weight" style="margin: 0;">${item.volume}</p>
+                                            <div class="item_volume_options">
+
+                                                ${item.packed ? `<!-- item is packed -->`
+                                                    : `${item.options.map(option => `
+                                                        <div class="item_volume_option">
+                                                            <p class="item_option_weight">${option.weight}</p>
+                                                            <p class="item_option_price">${option.price}</p>
+                                                        </div>
+                                                    `).join('')}`
+                                                }
+                                                <!-- custom option -->
+                                                <div class="item_volume_custom_option">
+                                                    <p class="item_volume_custom_option_head">Custom</p>
+                                                    <div class="item_volume_custom_option_input_div">
+                                                        ${item.packed ? `<!-- If item is packed, show text "pieces" -->
+                                                            <input type="number" class="item_volume_input_number" placeholder="Qty" min="0"  step="1" />
+                                                            <div class="item_volume_custom_option_for_pieces">pcs</div>`
+                                                    : ` <input type="number" class="item_volume_input_number" placeholder="Qty" min="0" />
+                                                            <div class="item_volume_custom_option_for_kggm">
+                                                                <label><input type="radio" name="kggm" checked value="kg"> kg</label>
+                                                                <label><input type="radio" name="kggm" value="gm"> gm</label>                                       
+                                                            </div>`}
+                                                    </div>
+                                                    <p class="item_volume_input_price">0</p>
+                                                    <button class="item_volume_custom_option_done_btn">Done</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p class="item_price">${item.price}</p>
+                                        <button class="item_add_btn">Add</button>
+                                    `;
+                                            subCategoryDiv.appendChild(itemDiv);
+                                            newItemElements1.push(itemDiv.querySelector('.item_volume')); // Store new item_volume divs
+                                            newItemElements2.push(itemDiv.querySelector('.item_add_btn')); // Store new item_volume divs
+                                        });
+
+                                        hideAllSubCategories();
+
+                                        attachVolumeOptionListeners(newItemElements1); // Attach listeners to new items
+                                        attachAddButtonListeners(newItemElements2); // Re-attach add button listeners to all items
+                                        groceryItemsContainer.appendChild(subCategoryDiv);
+                                        sectionSubCategories[category][subCategory] = subCategoryDiv;
+                                        console.log(" sectionSubCategories[category][subCategory] : " + category + subCategory);
+                                    })
+                                    .catch(error => {
+                                        hideAllSubCategories();
+                                        console.error('Error fetching data from the backend:', error);
+                                        showAlert('Failed to fetch data.', 'negative');
+                                        document.getElementById("loader_container").style.display = "none";
+                                    });
+                            } catch (error) {
+                                hideAllSubCategories();
+                                console.error("Error fetching data from the backend:", error);
+                                showAlert("Failed to load items. Please try again later.", "negative");
+                                document.getElementById("loader_container").style.display = "none";
+                            }
+                        }
+
+                        function hideAllSubCategories() {
+                            groceryItemsContainer.querySelectorAll('.grocery_items').forEach(div => div.style.display = 'none');
+                        }
+
+                        function showSubCategory(subCategory) {
+                            hideAllSubCategories();
+                            sectionSubCategories[category][subCategory].style.display = 'flex';
+                        }
+
+                        document.getElementById("loader_container").style.display = "none";
+
+
+                        // Event listener for subcategory buttons
+                        subCategoryButtons.forEach(button => {
+                            button.addEventListener('click', function () {
+                                document.getElementById("loader_container").style.display = "flex";
+
+                                const selectedSubCategory = this.getAttribute('data-subCategoryBtn');
+                                console.log(`Subcategory button clicked: ${selectedSubCategory}`);
+
+                                // Remove 'subCatSelected' class from the previously selected button
+                                if (activeButton) {
+                                    activeButton.classList.remove('subCatSelected');
+                                }
+
+                                this.classList.add('subCatSelected');
+                                activeButton = this; // Set the current button as active
+
+                                fetchGroceryItems(selectedSubCategory);
+                            });
+                        });
+
+                        // Optionally, load the first subcategory on page load
+                        const firstSubCategory = subCategoryButtons[0]?.getAttribute('data-subCategoryBtn');
+                        if (firstSubCategory) {
+                            // fetchGroceryItems(firstSubCategory);
+                            initializeSectionSubCategories(firstSubCategory);
+                            subCategoryButtons[0].classList.add('subCatSelected'); // Optionally, set the first one as selected
+                            activeButton = subCategoryButtons[0];
+                        }
+                    }
+
+
+                    grocerySections.forEach(section => {
+                        console.log("initialize sections subcategory.");
+                        document.getElementById("loader_container").style.display = "flex";
+                        initializeSubCategories(section);
+                        initializeScrollFunctionality(section);
+                    });
+
+
+
+                    attachVolumeOptionListeners(document.querySelectorAll('.item_volume'));
+                    attachAddButtonListeners(document.querySelectorAll('.item_add_btn'));
+
+
+
+                    //////////////////////////////////////////////
+                    //load more sections -
+
+                    const loadingRotatorForSections = document.getElementById("loadingRotatorForSections");
+                    const groceryContainer = document.getElementById('grocery-sections');
+                    const loadMoreTrigger = document.getElementById('load-more-trigger');
+                    const grocerySec = document.querySelectorAll('.grocery');
+                    const selectedCatElement5 = document.getElementById('selectedCat');
+                    const headCategoryName = selectedCatElement5.getAttribute('data-category');
+
+
+                    //showing loader
+                    loadingRotatorForSections.style.display = "block";
+
+                    // Get the data-category value of the last grocery section
+                    let lastGrocerySection = grocerySec[grocerySec.length - 1];
+                    let lastCategoryValue = lastGrocerySection ? lastGrocerySection.getAttribute('data-category') : null;
+
+                    // Track the last visible document for pagination
+                    let lastVisible = lastCategoryValue;
+                    let loading = false;
+
+                    // Set up IntersectionObserver to load more when reaching the bottom of the page
+                    const observer = new IntersectionObserver(async (entries) => {
+                        if (entries[0].isIntersecting && !loading) {
+                            console.log("Reached the bottom of grocery-sections");
+                            // showAlert("Loading more sections...", "positive");
+                            loadingRotatorForSections.style.display = "block";
+                            loading = true; // Prevent multiple requests while loading
+                            await loadAdditionalSections();
+                            loadingRotatorForSections.style.display = "none";
+                            loading = false; // Reset loading status
+                        }
+                    }, { root: null, rootMargin: '200px' });
+
+                    observer.observe(loadMoreTrigger);
+
+                    async function loadAdditionalSections() {
+                        console.log("loadAdditionalSections called...");
+                        try {
+                            const response = await fetch('/items/load_more_sections', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ lastVisible, headCategoryName }) // Send lastVisible to the backend
+                            });
+                            const data = await response.json();
+
+                            if (data.categories && data.categories.length > 0) {
+                                data.categories.forEach(category => renderCategory(category));
+                                lastVisible = data.lastVisible; // Update lastVisible with the new value for the next load
+                            } else {
+                                // console.log("No more sections to load.");
+                                // showAlert("All categories loaded.", "negative");
+                                observer.unobserve(loadMoreTrigger); // Stop observing if no more items to load
+                            }
+                        } catch (error) {
+                            console.error('Error loading more sections:', error);
+                            showAlert("Failed to load additional sections.", "negative");
+                        }
+                    }
+
+                    // Render Category Section Dynamically
+                    function renderCategory(category) {
+                        const categoryHTML = `
+<section class="grocery" data-category="${category.id}">
+    <div>
+        <h2 class="grocery_head">${category.id}</h2>
+        <div class="subCategoryDIv">
+            <div class="left_btn"><i class="fa-solid fa-chevron-left"></i></div>
+            <div class="right_btn"><i class="fa-solid fa-chevron-right"></i></div>
+            <div class="content2" style="padding: 0 5px;">
+                <div class="content3">
+                    ${category.subcategories.map((subcategory, index) => `
+                        <div class="grocery_type subCatElement ${index === 0 ? 'selected' : ''}" 
+                             data-subCategoryBtn="${subcategory.id}">
+                             ${subcategory.id}
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        </div>
+
+        <div class="grocery_items_container">
+           ${category.subcategories.map((subcategory, index) =>
+                            index === 0 ? `
+                    <div class="grocery_items"  
+                         data-subCategory="${subcategory.id}">
+                        ${subcategory.items.map(item => `
+                            <div class="grocery_item" data-packed="${item.packed}" data-itemCategory="${category.id}" data-itemSubCategory="${subcategory.id}">                                                    
+                                <div class="item_img">
+                                    <img src="${item.image_url}" alt="img" />
+                                </div>
+                                <p class="item_name">${item.id}</p>
+                                <p class="item_min_volume">${item.minVol}</p>
+                                <p class="item_max_volume">${item.maxVol}</p>
+                                <div class="item_volume">
+                                    <p class="item_weight" style="margin: 0;">${item.volume}</p>
+                                    <div class="item_volume_options">
+                                        ${item.packed ? `<!-- item is packed -->`
+                                    : `${item.options.map(option => `
+                                            <div class="item_volume_option">
+                                                <p class="item_option_weight">${option.weight}</p>
+                                                <p class="item_option_price">${option.price}</p>
+                                            </div>
+                                        `).join('')}`
+                                }
+                                        <!-- custom option -->
+                                        <div class="item_volume_custom_option">
+                                            <p class="item_volume_custom_option_head">Custom</p>
+                                            <div class="item_volume_custom_option_input_div">
+                                                ${item.packed ? `<!-- If item is packed, show text "pieces" -->
+                                                    <input type="number" class="item_volume_input_number" placeholder="Qty" min="0"  step="1" />
+                                                    <div class="item_volume_custom_option_for_pieces">pcs</div>`
+                                    : ` <input type="number" class="item_volume_input_number" placeholder="Qty" min="0" />
+                                                    <div class="item_volume_custom_option_for_kggm">
+                                                        <label><input type="radio" name="kggm" checked value="kg"> kg</label>
+                                                        <label><input type="radio" name="kggm" value="gm"> gm</label>                                       
+                                                    </div>`}
+                                            </div>
+                                            <p class="item_volume_input_price">0</p>
+                                            <button class="item_volume_custom_option_done_btn">Done</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="item_price">${item.price}</p>
+                                <button class="item_add_btn">Add</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                ` : ''
+                        ).join('')}
+
+        </div>
+    </div>
+</section>
+`;
+
+                        // Get the grocery-sections container
+                        const groceryContainer = document.getElementById('grocery-sections');
+                        const loadMoreTrigger = document.getElementById('load-more-trigger');
+
+                        if (groceryContainer && loadMoreTrigger) {
+                            // Insert the new categoryHTML just before the load-more-trigger (at the bottom)
+                            groceryContainer.insertBefore(loadMoreTrigger, groceryContainer.lastElementChild);
+                            groceryContainer.appendChild(loadMoreTrigger); // Reattach load-more-trigger at the bottom
+                            groceryContainer.insertAdjacentHTML('beforeend', categoryHTML); // Append the new categoryHTML at the end
+
+                            attachVolumeOptionListeners(document.querySelectorAll('.item_volume'));
+                            attachAddButtonListeners(document.querySelectorAll('.item_add_btn'));
+                            // sectionSubCategories[category.id][subcategory.id] = document.querySelector(`div[data-subCategory="${subcategory.id}"]`);
+                            console.log(`document.querySelector(section[data-category="${category.id}"]) : ` + document.querySelector(`section[data-category="${category.id}"]`))
+                            initializeSubCategories(document.querySelector(`section[data-category="${category.id}"]`));
+                            initializeScrollFunctionality(document.querySelector(`section[data-category="${category.id}"]`));
+                        }
+                    }
+                });
+
+            </script>
+
+
+            <!--  -->
+            <script nonce="<%-nonce%>">
+
+                //Function to handle volume dropdown logic
+                function attachVolumeOptionListeners(itemVolumes) {
+                    itemVolumes.forEach(function (itemVolume) {
+                        // Scope elements to the current grocery_item to avoid interference
+                        const groceryItem = itemVolume.closest('.grocery_item'); // Limit scope to individual grocery_item
+                        const packed = groceryItem.getAttribute('data-packed');
+                        const dropdown = itemVolume.querySelector('.item_volume_options');
+                        const customOption = dropdown.querySelector('.item_volume_custom_option');
+                        const doneButton = customOption.querySelector('.item_volume_custom_option_done_btn');
+                        const volumeOptions = dropdown.querySelectorAll('.item_volume_option');
+
+                        // Scoped elements within the current grocery_item
+                        const minVolume = groceryItem.querySelector('.item_min_volume');
+                        const maxVolume = groceryItem.querySelector('.item_max_volume');
+                        const itemPrice = groceryItem.querySelector('.item_price');
+                        const itemWeight = groceryItem.querySelector('.item_weight');
+                        const inputPrice = customOption.querySelector('.item_volume_input_price');
+                        const inputWeightElement = customOption.querySelector('.item_volume_input_number');
+                        const radioButtonKggm = customOption.querySelectorAll('input[name="kggm"]');
+
+
+                        // Toggle dropdown visibility on item_volume click
+                        itemVolume.addEventListener('click', function (event) {
+                            closeAllDropdowns();
+                            dropdown.classList.toggle('show');
+                            event.stopPropagation(); // Prevent the click from bubbling up
+                        });
+
+                        // Attach event listener for predefined volume options
+                        volumeOptions.forEach(function (option) {
+                            option.addEventListener('click', function (event) {
+                                const selectedPrice = option.querySelector('.item_option_price').textContent;
+                                const selectedWeight = option.querySelector('.item_option_weight').textContent;
+
+                                // Update price and weight elements scoped to current grocery_item
+                                itemPrice.textContent = selectedPrice;
+                                itemWeight.textContent = selectedWeight;
+
+                                // Close dropdown after selection
+                                dropdown.classList.remove('show');
+                                event.stopPropagation();
+                            });
+                        });
+
+                        // Prevent dropdown from closing when clicking on custom option area
+                        customOption.addEventListener('click', function (event) {
+                            event.stopPropagation();
+                        });
+
+                        // Event listener for custom "Done" button to close dropdown
+                        doneButton.addEventListener('click', function (event) {
+                            dropdown.classList.remove('show');
+                            event.stopPropagation();
+                        });
+
+                        // Event listener for custom weight input changes
+                        inputWeightElement.addEventListener('input', function (event) {
+                            const value = parseFloat(event.target.value);
+                            if (value < 0) {
+                                event.target.value = 0;
+                            }
+                            getClosestWeightAndPrice(value, true, this); // Pass context for current grocery_item
+                        });
+
+                        // Event listener for kg/gm radio button changes
+                        radioButtonKggm.forEach(function (radioButton) {
+                            radioButton.addEventListener('change', function () {
+                                getClosestWeightAndPrice(inputWeightElement.value, false, this);
+                            });
+                        });
+
+                        // Adjusted getClosestWeightAndPrice to update elements only within current grocery_item
+                        function getClosestWeightAndPrice(inputData, flag, context) {
+                            if (!inputData) {
+                                inputPrice.textContent = 0;
+                                return;
+                            }
+
+                            if (packed === "false") {
+                                const selectedKggm = customOption.querySelector('input[name="kggm"]:checked');
+                                const minVol = convertToGrams(getSafeTextContent(minVolume));
+                                const maxVol = convertToGrams(getSafeTextContent(maxVolume));
+
+                                const weight = inputData + " " + selectedKggm.value;
+                                const targetWeight = convertToGrams(weight);
+                                const weightElements = dropdown.querySelectorAll('.item_option_weight');
+                                const priceElements = dropdown.querySelectorAll('.item_option_price');
+
+                                let closestWeight = null;
+                                let closestPrice = null;
+                                let closestDifference = Infinity;
+
+                                // Loop through available weights to find closest match
+                                weightElements.forEach((weightElement, index) => {
+                                    const currentWeight = convertToGrams(weightElement.textContent);
+                                    const difference = Math.abs(targetWeight - currentWeight);
+
+                                    if (difference < closestDifference) {
+                                        closestDifference = difference;
+                                        closestWeight = currentWeight;
+                                        closestPrice = parseFloat(priceElements[index].textContent);
+                                    }
+                                });
+
+                                const rate = closestPrice / closestWeight;
+                                const newPrice = (rate * targetWeight).toFixed(2);
+
+                                // Update only if within the valid min-max volume range
+                                if (targetWeight >= minVol && targetWeight <= maxVol) {
+                                    inputPrice.textContent = newPrice;
+                                    itemPrice.textContent = newPrice;
+                                    itemWeight.textContent = weight;
+                                } else {
+                                    inputPrice.textContent = 0;
+                                    showAlert(`Item should be in range from ${getSafeTextContent(minVolume)} to ${getSafeTextContent(maxVolume)}.`, 'negative');
+                                }
+                            } else if (packed === "true") {
+                                // For packed items
+                                const inputDataVal = Math.round(inputData); // round the inputData to the nearest whole number
+                                if (flag) {
+                                    context.value = inputDataVal;
+                                }
+                                inputData = inputDataVal;
+                                const minVol = parseInt(getSafeTextContent(minVolume));
+                                const maxVol = parseInt(getSafeTextContent(maxVolume));
+                                const itemQty = parseInt(getSafeTextContent(itemWeight));
+                                const itemPriceForQty = parseFloat(itemPrice.textContent);
+                                const rate = itemPriceForQty / itemQty;
+                                const newPrice = (rate * inputData).toFixed(2);
+
+                                // Update if within valid min-max quantity range
+                                if (inputData >= minVol && inputData <= maxVol) {
+                                    inputPrice.textContent = newPrice;
+                                    itemPrice.textContent = newPrice;
+                                    itemWeight.textContent = inputData;
+                                } else {
+                                    inputPrice.textContent = 0;
+                                    showAlert(`Item should be in range from ${getSafeTextContent(minVolume)} to ${getSafeTextContent(maxVolume)}.`, 'negative');
+                                }
+                            } else {
+                                showAlert("Something went wrong to calculate price.", "negative");
+                            }
+                        }
+                    });
+
+                    // Global listener to close dropdowns except the currently open one
+                    document.addEventListener('click', function () {
+                        closeAllDropdowns();
+                    });
+                }
+
+                // Function to attach 'Add' button event listeners
+                function attachAddButtonListeners(addButtons) {
+                    addButtons.forEach(function (button) {
+                        // Ensure we don't add the event listener multiple times by checking for an existing one
+                        if (!button.dataset.listenerAttached) {
+                            button.addEventListener('click', function () {
+                                console.log("add button clicked.");
+                                let itemDiv = button.closest('.grocery_item');
+                                let itemCategory = button.parentElement.getAttribute('data-itemCategory');
+                                let itemSubCategory = button.parentElement.getAttribute('data-itemSubCategory');
+                                let itemName = itemDiv.querySelector('.item_name');
+                                let itemWeight = itemDiv.querySelector('.item_weight');
+                                this.disabled = true;
+                                document.getElementById("loader_container").style.display = "flex";
+
+                                addToCart(this, getSafeTextContent(itemName), String(itemWeight.textContent), String(itemCategory), String(itemSubCategory));
+                            });
+
+                            // Mark that a listener has been attached to this button
+                            button.dataset.listenerAttached = true;
+                        }
+                    });
+                }
+
+
+                // Helper function to close all open dropdowns
+                function closeAllDropdowns() {
+                    document.querySelectorAll('.item_volume_options.show').forEach(function (dropdown) {
+                        dropdown.classList.remove('show');
+                    });
+                }
+
+
+
+                // Function to send the product ID to the backend
+                function addToCart(context, itemName, itemWeight, itemCat, itemSubCat) {
+                    fetch('/add_to_cart', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            item_name: itemName,
+                            item_weight: itemWeight,
+                            itemCategory: itemCat,
+                            itemSubCategory: itemSubCat
+                        })
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                context.disabled = false;
+                                document.getElementById("loader_container").style.display = "none";
+
+                                showAlert('Failed to add item to cart.', 'negative');
+                                throw new Error('Failed to add item to cart');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            context.disabled = false;
+                            document.getElementById("loader_container").style.display = "none";
+
+                            if (data.type == "positive") {
+                                showAlert('Item successfully added to cart.', data.type);
+                            }
+                            else {
+                                showAlert(data.message, data.type);
+                            }
+                            console.log(data.message);
+                            $('.cart_item_no').text(data.totalCart);
+                        })
+                        .catch(error => {
+                            context.disabled = false;
+                            document.getElementById("loader_container").style.display = "none";
+
+                            showAlert('Error adding item to cart.', 'negative');
+                            console.error('Error adding item to cart:', error);
+                        });
+                }
+
+
+                // Utility to convert kg/gm to grams
+                function convertToGrams(value) {
+                    if (typeof value === 'string' && value.includes('kg')) {
+                        return parseFloat(value) * 1000;
+                    } else {
+                        return parseInt(value);
+                    }
+                }
+
+                function getSafeTextContent(element) {
+                    if (element && typeof element.textContent === 'string') {
+                        // Sanitize text content but allow &, -, ( )
+                        const sanitizedText = element.textContent
+                            .replace(/</g, '&lt;')
+                            .replace(/>/g, '&gt;');
+
+                        return sanitizedText;
+                    } else {
+                        showAlert('Malicious code injected.', 'negative');
+                        return '';
+                    }
+                }
+            </script>
+
+
+
+<!-- footer -->
+<%- include('partials/footer') %>
+</body>
+
+</html>

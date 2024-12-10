@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin dashboard</title>
+    <!-- google font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Khula:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <!-- google icon -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,700,0,0" />
+    <!--Font awesome icon-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <script nonce="<%-nonce%>" src="https://kit.fontawesome.com/6ac775d87f.js" crossorigin="anonymous"></script>
+    <!-- jQuery -->
+    <script nonce="<%-nonce%>" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+    <style>
+        * {
+            user-select: none;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 0;
+            margin: 0;
+            background-color: transparent;
+            /* background-color: rgb(218, 229, 217); */
+
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        a {
+            text-decoration: none;
+            color: black;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            text-transform: capitalize;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .align-center {
+            align-items: center;
+        }
+
+        .justify-center {
+            justify-content: center;
+        }
+
+        .justify-around {
+            justify-content: space-around;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            padding: 8px 18px;
+            font-size: 15px;
+            background-color: rgb(0, 0, 0);
+            color: white;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+  <div>
+    <div class="logo_circle"><span style="color: #0bb744;">m</span><span style="color: rgb(19, 19, 19);">S</span></div>
+    <div class="logo"><a href="/">minto<span>Speed</span></a></div>
+    <p>Your trusted and fasted grocery delivery partner</p>
+  </div>
+    <style>
+        p{
+            font-weight: 700;
+            font-size: 30px;
+            text-align: center;
+            text-transform: capitalize;
+        }
+        
+    div.logo {
+      margin-top: 50px;
+    }
+
+    div.logo>a {
+      color: #0bb744;
+      font-weight: 800;
+      font-size: 120px;
+    }
+
+    div.logo>a span{
+      color: rgb(19, 19, 19);
+    }
+        div.logo_circle{ 
+            text-align: center;
+            position: relative;
+            color: #0bb744;
+            font-weight: 800;
+            font-size: 195px;   
+            z-index: 10;
+        }
+        div.logo_circle::before{
+            z-index: -5;
+            content:  '';
+            position: absolute;
+            top: -2px;
+            left: 180px;
+            height: 300px;
+            width: 400px;
+            border-radius: 50%;
+            background-color: rgb(218, 229, 217);
+        }
+        div.logo_circle span{
+            z-index: 10000;
+        }
+
+        </style>
+</body>
+</html>

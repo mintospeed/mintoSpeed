@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login - Grocery Services</title>
+  <!-- google font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Khula:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <!--Font awesome icon-->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+  <script nonce="<%-nonce%>" src="https://kit.fontawesome.com/6ac775d87f.js" crossorigin="anonymous"></script>
+
+
+  <style>
+    * {
+      user-select: none;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+      font-family: 'Open Sans', sans-serif;
+    }
+
+    body {
+      position: relative;
+      padding: 0;
+      margin: 0;
+      background-color: rgb(243, 243, 243);
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    a {
+      text-decoration: none;
+      color: black;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      text-transform: capitalize;
+    }
+
+    .flex {
+      display: flex;
+    }
+
+
+/* Set a style for all buttons */
+.messageBoxBtn {
+  background-color: #1aaa04;
+  color: white;
+  padding: 11px 20px;
+  margin: 8px;
+  border: none;
+  cursor: pointer;
+  width: fit-content;
+}
+
+.messageBoxBtn:hover {
+  opacity: 0.8;
+}
+
+/* Extra styles for the cancel button */
+.cancelbtn {
+  width: auto;
+  padding: 10px 18px;
+  background-color: #f44336;
+}
+
+.boxContainer {
+  padding: 10px;
+}
+
+.messageBoxContainerHead {
+  text-align: center;
+  margin: 15px 0 10px 0;
+  position: relative;
+  font-size: 18px;
+  font-weight: 700;
+}
+.messageBoxHead, .messageBoxP{
+  margin: 0;
+}
+.messageBoxP{
+        font-size: 15px;
+        margin: 8px 5px;
+  }
+
+/* The messageBoxModel (background) */
+.messageBoxModel {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  justify-content: center;
+  align-items: center;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* messageBoxModel Content/Box */
+.messageBoxModel-content {
+  background-color: #fefefe;
+  margin: 20px; 
+  border: 1px solid #888;
+  max-width: 600px;
+  min-width: 300px;
+  padding: 10px;
+}
+
+/* The Close Button (x) */
+.messageBoxClose {
+  position: absolute;
+  right: 20px;
+  top: -10px;
+  color: #000;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.messageBoxClose:hover,
+.messageBoxClose:focus {
+  color: red;
+  cursor: pointer;
+}
+
+/* Add Zoom Animation */
+.messageBoxAnimate {
+  -webkit-animation: animatezoom 0.4s;
+  animation: animatezoom 0.4s
+}
+
+@-webkit-keyframes animatezoom {
+  from {-webkit-transform: scale(0)} 
+  to {-webkit-transform: scale(1)}
+}
+  
+@keyframes animatezoom {
+  from {transform: scale(0)} 
+  to {transform: scale(1)}
+}
+
+
+@media screen and (max-width: 450px) {
+  .messageBoxModel-content {
+  margin: 5px; 
+  max-width: 100%;
+  padding: 5px;
+}
+}
+
+</style>
+</head>
+<body>
+
+<h2>Modal Login Form</h2>
+
+<button  class="messageBoxBtn" onclick="document.getElementById('messageBoxid01').style.display='flex'" style="width:auto;">Login</button>
+
+<div id="messageBoxid01" class="messageBoxModel">
+  <div class="messageBoxModel-content messageBoxAnimate">
+    <div class="messageBoxContainerHead">
+      <span onclick="document.getElementById('messageBoxid01').style.display='none'" class="messageBoxClose" title="Close Modal">&times;</span>
+      <p class="messageBoxHead">Alert box</p>
+    </div>
+
+    <div class="boxContainer">
+      <div class="messageBoxP"></div>
+    </div>
+   
+    <div class="boxContainer" style="float: right;">
+      <button type="button" class="messageBoxBtn" onclick="document.getElementById('messageBoxid01').style.display='none'" class="cancelbtn">Ok</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Get the modal
+var messageBoxModel = document.getElementById('messageBoxid01');
+
+// When the user clicks anywhere outside of the messageBoxModel, close it
+window.onclick = function(event) {
+    if (event.target == messageBoxModel) {
+        messageBoxModel.style.display = "none";
+    }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders - Grocery Services</title>
+    <!-- google font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Khula:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <!-- google icon -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,700,0,0" />
+    <!--Font awesome icon-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <script nonce="<%-nonce%>" src="https://kit.fontawesome.com/6ac775d87f.js" crossorigin="anonymous"></script>
+    <!-- jQuery -->
+    <script nonce="<%-nonce%>" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        body {
+            position: relative;
+            padding: 0;
+            margin: 0;
+            background-color: rgb(243, 243, 243);
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        a {
+            text-decoration: none;
+            color: black;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            text-transform: capitalize;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .align-center {
+            align-items: center;
+        }
+
+        .justify-center {
+            justify-content: center;
+        }
+
+        .justify-around {
+            justify-content: space-around;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            padding: 8px 18px;
+            font-size: 15px;
+            background-color: rgb(0, 0, 0);
+            color: white;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- alertboxAndLoader -->
+    <%- include('../partials/alertboxAndLoader') %>
+        <%- include('../partials/popupBox') %>
+            <p id="errorString"></p>
+
+            <% if (typeof errorString !=='undefined' && errorString.length> 0) { %>
+                <p style="text-align: center; margin-top: 30px; color: red; margin-bottom: 100px;">Error : <%=
+                        errorString %>
+                </p>
+                <% } %>
+
+
+                    <% if (typeof orders !=='undefined' && orders.length> 0) { %>
+                        <h4 class="info_h4">Completed orders (<%=totalOrders%>)</h4>
+                        <div id="dataContainer">
+                            <% orders.forEach(order=> { %>
+
+                                <div class="userDataContainer">
+                                    <div class="user-info">
+                                        <p><span class="user-info-span" style="text-transform: capitalize;">Name:
+                                            </span>
+                                            <%= order.fullName %>
+                                        </p>
+                                        <p><span class="user-info-span">OrderId: </span>
+                                            <%= order.orderId %>
+                                        </p>
+                                        <p><span class="user-info-span">Phone: </span>
+                                            <%= order.phone %>
+                                        </p>
+                                        <p><span class="user-info-span">Email: </span>
+                                            <%= order.email %>
+                                        </p>
+                                        <p><span class="user-info-span">OrderTime: </span>
+                                            <%= order.orderTime %>
+                                        </p>
+                                        <p><span class="user-info-span">Address: </span>
+                                            <%= order.streetAddress %>
+                                        </p>
+                                        <p><span class="user-info-span">City: </span>
+                                            <%= order.city %>
+                                        </p>
+                                        <p><span class="user-info-span">Pincode: </span>
+                                            <%= order.pincode %>
+                                        </p>
+                                        <p><span class="user-info-span">UserId: </span>
+                                            <%= order.orderUserId %>
+                                        </p>
+                                        <p><span class="user-info-span">Delivery On: </span>
+                                            <%= order.deliverTime %>
+                                        </p>
+                                        <p><span class="user-info-span">Status: </span>
+                                            <%= order.orderStatus %>
+                                        </p>
+                                    </div>
+
+                                    <div class="table-section">
+                                        <table class="table">
+
+                                            <tbody>
+                                                <% order.orderItems.forEach(item=> { %>
+                                                    <tr>
+                                                        <td>
+                                                            <%= item.name %>
+                                                        </td>
+                                                        <td>
+                                                            <%= item.quantity %>
+                                                        </td>
+                                                        <td>₹<%= item.price %>
+                                                        </td>
+                                                    </tr>
+                                                    <% }) %>
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td colspan="2" style="text-align: right;">Subtotal</td>
+                                                    <td>
+                                                        ₹<%= order.orderTotalPrice %> (<%= order.orderTotalItems %>
+                                                                items)</td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+
+                                    </div>
+                                    <div class="actions">
+
+                                        <div class="buttons">
+                                           
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <% }) %>
+                        </div>
+
+                        <% } else { %>
+                            <p style="text-align: center; margin-top: 80px; margin-bottom: 100px;">No  order
+                                found.</p>
+                            <% } %>
+
+
+                                <% if (typeof totalPages !=='undefined' ) { %>
+                                    <!-- Pagination Buttons for  Orders -->
+                                    <div class="pagination">
+                                        <% for (let i=1; i <=totalPages; i++) { %>
+                                            <button class="pagination-btn pending" data-page="<%= i %>">
+                                                <%= i %>
+                                            </button>
+                                            <% } %>
+                                    </div>
+                                    <% } %>
+
+                                        <style>
+                                            .pagination {
+                                                display: flex;
+                                                justify-content: center;
+                                                padding: 40px 20px;
+                                            }
+
+                                            .pagination-btn {
+                                                background-color: transparent;
+                                                margin: 2px;
+                                                color: black;
+                                                font-weight: 600;
+                                                border-radius: 10px;
+                                            }
+
+                                            .userDataContainer {
+                                                margin: 20px;
+                                                background: #fff;
+                                                border-radius: 8px;
+                                                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                                                padding: 20px;
+                                                box-sizing: border-box;
+                                            }
+
+                                            .info_h4 {
+                                                font-size: 18px;
+                                                font-weight: 700;
+                                                text-align: center;
+                                                margin: 40px 0;
+                                            }
+
+                                            .user-info {
+                                                margin-bottom: 20px;
+                                                display: flex;
+                                                flex-wrap: wrap;
+                                            }
+
+                                            .user-info p {
+                                                min-width: 50%;
+                                                margin: 5px 0;
+                                                font-size: 15px;
+                                                color: #3a3a3a;
+                                            }
+
+                                            .user-info-span {
+                                                color: #727272;
+                                                font-size: 12px;
+                                            }
+
+                                            .table-section {
+                                                margin-bottom: 20px;
+                                            }
+
+                                            .actions {
+                                                display: flex;
+                                                flex-direction: column;
+                                                gap: 10px;
+                                            }
+
+                                            input[type="datetime-local"] {
+                                                padding: 7px;
+                                                font-size: 14px;
+                                                border: 1px solid #ccc;
+                                                border-radius: 4px;
+                                                outline: none;
+                                            }
+
+                                            .actions .buttons {
+                                                margin-top: 15px;
+                                                display: flex;
+                                                justify-content: right;
+                                                gap: 10px;
+                                            }
+
+                                            .btn {
+                                                padding: 8px 13px;
+                                                font-size: 13px;
+                                                border: none;
+                                                border-radius: 4px;
+                                                cursor: pointer;
+                                            }
+
+                                            .btn:hover {
+                                                opacity: 0.9;
+                                            }
+
+                                            .table {
+                                                width: 100%;
+                                                border-collapse: collapse;
+                                            }
+
+                                            .table td,
+                                            .table th {
+                                                word-wrap: break-word;
+                                                word-break: break-all;
+                                                padding: 8px 1px;
+                                                border: 1px solid #c0c0c0;
+                                                text-align: center;
+                                                font-size: 13px;
+                                                background-color: #f9f5f5;
+                                            }
+
+                                            .status_td {
+                                                text-transform: capitalize;
+                                            }
+
+                                            .table th {
+                                                font-size: 12px;
+                                                padding: 7px 1px;
+                                                background-color: rgb(148, 211, 130);
+                                                color: #000000;
+                                            }
+
+                                            .table tbody tr:nth-child(even) {
+                                                background-color: #ececec;
+                                            }
+
+                                            @media screen and (max-width: 600px) {
+                                                .userDataContainer {
+                                                    padding: 20px 5px;
+                                                    margin: 20px 3px;
+                                                }
+                                            }
+                                        </style>
+
+
+                                        <script nonce="<%-nonce%>">
+                                            document.addEventListener('DOMContentLoaded', () => {
+                                                // Function to fetch and render orders
+                                                const fetchOrders = async (page, type) => {
+                                                    try {
+                                                        const response = await fetch('/dashboard/completedOrders/fetch-orders', {
+                                                            method: 'POST',
+                                                            headers: {
+                                                                'Content-Type': 'application/json',
+                                                            },
+                                                            body: JSON.stringify({
+                                                                page
+                                                            }),
+                                                        });
+
+                                                        if (response.ok) {
+                                                            const data = await response.json();
+                                                            if (data.success) {
+                                                                document.getElementById('errorString').textContent = data.errorString;
+                                                                const dataContainer = document.getElementById('dataContainer');
+
+                                                                dataContainer.innerHTML = data.detailedOrders.map(order => `
+                         <div class="userDataContainer">
+                            <div class="user-info">
+                               <p><span class="user-info-span" style="text-transform: capitalize;">Name: </span>${order.fullName}</p>
+                               <p><span class="user-info-span">OrderId: </span>${order.orderId}</p>
+                               <p><span class="user-info-span">Phone: </span>${order.phone}</p>
+                               <p><span class="user-info-span">Email: </span>${order.email}</p>
+                               <p><span class="user-info-span">OrderTime: </span>${order.orderTime}</p>
+                               <p><span class="user-info-span">Address: </span>${order.streetAddress}</p>
+                               <p><span class="user-info-span">City: </span>${order.city}</p>
+                               <p><span class="user-info-span">Pincode: </span>${order.pincode}</p>
+                               <p><span class="user-info-span">UserId: </span>${order.orderUserId}</p>
+                                <p><span class="user-info-span">Delivery On: </span>${order.deliverTime}</p>
+                                <p><span class="user-info-span">Status: </span>${order.orderStatus}</p>
+                            </div>
+                        
+                            <div class="table-section">
+                                <table class="table">
+                                
+                                    <tbody>
+                                         ${order.orderItems.map(item => `
+                                          <tr>
+                                            <td>${item.name}</td>
+                                            <td>${item.quantity}</td>
+                                            <td>₹${item.price}</td>
+                                          </tr>
+                                        `).join('')}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="2" style="text-align: right;">Subtotal</td>
+                                            <td>
+                                                ₹${order.orderTotalPrice} (${order.orderTotalItems} items)</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            
+                            </div>
+                            <div class="actions">
+                            
+                                <div class="buttons">
+                                 </div>
+                        </div>
+                        `).join('');
+
+                                                            } else {
+                                                                showAlert(data.message, "negative");
+                                                                console.error('Failed to fetch orders:', data.message);
+                                                            }
+                                                        } else {
+                                                            showAlert("Failed to fetch orders.", "negative");
+                                                            console.error('Failed to fetch orders:', response.statusText);
+                                                        }
+                                                    } catch (error) {
+                                                        console.error('Error fetching orders:', error);
+                                                        showAlert("Error to fetch orders.", "negative");
+                                                    }
+                                                };
+
+                                                // Function to handle button highlighting
+                                                const highlightButton = (type, page) => {
+                                                    const buttons = document.querySelectorAll(`.pagination-btn.${type}`);
+                                                    buttons.forEach(button => {
+                                                        // Set background only for the active button
+                                                        if (button.getAttribute('data-page') === page) {
+                                                            button.style.backgroundColor = '#5de778'; // Active button color
+                                                        } else {
+                                                            button.style.backgroundColor = 'transparent'; // Reset other buttons
+                                                        }
+                                                    });
+                                                };
+
+                                                // Initialize pagination on page load
+                                                const initializePagination = () => {
+                                                    // Default first page active for both pending and all orders
+                                                    const firstPendingButton = document.querySelector('.pagination-btn.pending[data-page="1"]');
+
+                                                    if (firstPendingButton) {
+                                                        highlightButton('pending', '1'); // Highlight first pending button
+                                                    }
+                                                };
+
+                                                // Add click event listeners to pagination buttons
+                                                document.addEventListener('click', (event) => {
+                                                    if (event.target.classList.contains('pagination-btn')) {
+                                                        const page = event.target.getAttribute('data-page');
+                                                        const type = 'pending';
+
+                                                        // Highlight the clicked button
+                                                        highlightButton(type, page);
+
+                                                        // Fetch orders for the selected page
+                                                        fetchOrders(page, type);
+                                                    }
+                                                });
+
+                                                // Initialize pagination on page load
+                                                initializePagination();
+                                            });
+                                        </script>
+
+                                
+
+</body>
+
+</html>
