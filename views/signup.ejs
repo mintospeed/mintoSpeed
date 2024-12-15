@@ -1,107 +1,552 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phone Authentication</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account | mintoSpeed</title>
+  <meta name="description" content="Signup in mintoSpeed">
+  <meta name="keywords" content="signup">
+  <meta name="author" content="mintoSpeed">
+
+   <!-- fav icon -->
+   <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+   <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+   <link rel="shortcut icon" href="/favicon.ico" />
+   <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+   <link rel="manifest" href="/favicon/site.webmanifest" />
+ 
+  <!-- google font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Khula:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <!--Font awesome icon-->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+  <!-- hash -->
+  <script nonce="<%-nonce%>" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+
+  <!-- Firebase JS SDK -->
+  <script nonce="<%-nonce%>" src="https://www.gstatic.com/firebasejs/9.12.1/firebase-app-compat.js"></script>
+  <script nonce="<%-nonce%>" src="https://www.gstatic.com/firebasejs/9.12.1/firebase-auth-compat.js"></script>
+
 </head>
+
 <body>
-    <h1>Phone Authentication</h1>
+  <!-- alertboxAndLoader -->
+  <%- include('partials/alertboxAndLoader') %>
 
-    <!-- Phone Number Input -->
-    <div>
-        <label for="phone-number">Phone Number (without country code):</label>
-        <input type="text" id="phone-number" placeholder="Enter phone number" />
-        <button id="send-verification-btn">Send Verification Code</button>
-    </div>
+    <section class="container">
+      <div class="container2">
+        <div class="logo"><a href="/">minto<span>Speed</span></a></div>
+        <header>Create Account</header>
 
-    <!-- Verification Code Input -->
-    <div id="verification-section" style="display: none;">
-        <label for="verification-code">Enter Verification Code:</label>
-        <input type="text" id="verification-code" placeholder="Enter code" />
-        <button id="verify-code-btn">Verify Code</button>
-    </div>
 
-    <!-- Recaptcha Container -->
-    <div id="recaptcha-container"></div>
+        <!--  -->
+        <div class="formDiv">
+          <div class="input-box">
+            <label>Full Name</label>
+            <input type="text" id="fullName" placeholder="Enter full name" required />
+          </div>
 
-    <div id="status-message"></div>
+          <div class="column" style="flex-wrap: nowrap;">
+            <div class="input-box">
+              <label>Email Address</label>
+              <input type="email" id="email" placeholder="Enter Email Address" required />
+            </div>
 
-    <!-- Firebase SDKs -->
-    <script nonce="<%-nonce%>" src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-    <script nonce="<%-nonce%>" src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+          </div>
+
+          <div id="recaptcha-container"></div>
+          <div class="column" style="flex-wrap: nowrap;">
+            <div class="input-box">
+              <label>Phone Number</label>
+              <input type="number" id="phone" placeholder="Enter phone number" required />
+            </div>
+            <div style="margin-top: 15px;">
+              <button id="sendOtpBtn" class="verifyOtpBtn">Send OTP</button>
+            </div>
+          </div>
+
+          <div class="column" id="otpSection" style="flex-wrap: nowrap; display: none;">
+            <div class="input-box">
+              <label>Verify OTP </label>
+              <input type="text" id="phoneotp" placeholder="Enter OTP" required />
+            </div>
+            <div style=" margin-top: 15px;">
+              <button id="verifyOtpBtn" class="verifyOtpBtn">Verify OTP</button>
+            </div>
+          </div>
+
+          <div class="column" style="flex-wrap: nowrap;">
+            <div class="input-box">
+              <label>Create Password</label>
+              <input type="password" id="passwordInput" placeholder="Create password" />
+            </div>
+            <div>
+              <p style="width: 30px; padding-top: 22px;" id="togglePassword" class="togBtn"
+                style="background-color: transparent;"><i class="fa-solid fa-eye-slash"></i></p>
+            </div>
+          </div>
+
+          <div class="input-box address">
+            <label>Address</label>
+            <input type="text" id="streetAddress" placeholder="Enter street address" required />
+            <div class="column">
+              <input type="text" id="city" placeholder="Enter your city" required />
+              <input type="number" id="pincode" placeholder="Enter pincode" required />
+            </div>
+
+          </div>
+
+          <button class="orderBtn" id="submitBtn">Submit</button>
+          <p style="text-align: center; font-size: 14px; margin-top: 20px;">Already have an account? <a href=""
+              style="text-decoration: none;">Login</a></p>
+          </formDiv>
+
+        </div>
+    </section>
 
     <script nonce="<%-nonce%>">
-        // Firebase Config
+      document.addEventListener("DOMContentLoaded", () => {
+        const passwordInput = document.getElementById("passwordInput");
+        const togglePassword = document.getElementById("togglePassword");
+
+        togglePassword.addEventListener("click", () => {
+          const isPassword = passwordInput.getAttribute("type") === "password";
+          passwordInput.setAttribute("type", isPassword ? "text" : "password");
+          togglePassword.innerHTML = isPassword
+            ? '<i class="fa-solid fa-eye"></i>' // Show password icon
+            : '<i class="fa-solid fa-eye-slash"></i>'; // Hide password icon
+        });
+
+
         const firebaseConfig = {
-            apiKey: "AIzaSyCCBfEj2smTd_tWi5YWMMC2NC6qazU-njs", 
-            authDomain: "groscool-49709.firebaseapp.com",
-            projectId: "groscool-49709",
-            messagingSenderId: "728645803173",
-            appId: "1:728645803173:web:d908577eb05597f4d3814c"
+          apiKey: "AIzaSyDFgvcbxCbPKwSxkzdIBYe0CJGCeqhQO2Q",
+          authDomain: "mintospeed-web.firebaseapp.com",
+          projectId: "mintospeed-web",
+          messagingSenderId: "494958498311",
+          appId: "1:494958498311:web:da56215a676c72ec7390a2",
+          measurementId: "G-G0671NCF1W"
+
         };
 
         // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
+        const app = firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
+        let user;
+        let confirmationResult; // Store confirmationResult globally
 
-        // Initialize RecaptchaVerifier
-        const recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-            size: 'invisible',
-            callback: function(response) {
-                console.log('Recaptcha verified!');
-            }
-        });
-
-        recaptchaVerifier.render();
-
-        let confirmationResult; // Used to store verification result
-
-        // Handle sending the verification code
-        document.getElementById('send-verification-btn').addEventListener('click', async function() {
-            let phoneNumber = document.getElementById('phone-number').value;
-
-            // Prepend +91 if not already present
-            if (!phoneNumber.startsWith('+91')) {
-                phoneNumber = '+91' + phoneNumber;
-            }
-
+        function initializeRecaptcha() {
+          // Check if recaptchaVerifier already exists
+          if (window.recaptchaVerifier) {
             try {
-                confirmationResult = await auth.signInWithPhoneNumber(phoneNumber, recaptchaVerifier);
-                document.getElementById('verification-section').style.display = 'block';
-                document.getElementById('status-message').innerText = "Verification code sent!";
+              // Clear existing reCAPTCHA instance
+              window.recaptchaVerifier.clear();
             } catch (error) {
-                console.error('Error sending verification code:', error);
-                document.getElementById('status-message').innerText = "Failed to send verification code.";
+              showAlert("Something went wrong with recaptcha. Please refresh the page and try again.", "negative");
+              console.warn('Failed to clear existing RecaptchaVerifier:', error.message);
+              return;
             }
-        });
+          }
 
-        // Handle verifying the OTP
-        document.getElementById('verify-code-btn').addEventListener('click', async function() {
-            const verificationCode = document.getElementById('verification-code').value;
+          // Initialize a new RecaptchaVerifier instance
+          window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+            size: 'invisible', // Use 'normal' for debugging
+            callback: (response) => console.log('Recaptcha solved:', response),
+            'expired-callback': () => {
+              console.warn('Recaptcha expired. Reinitializing...');
+              initializeRecaptcha();
+            }
+          });
 
+          // Render reCAPTCHA immediately
+          window.recaptchaVerifier.render().then((widgetId) => {
+            console.log('Recaptcha widget ID:', widgetId);
+          }).catch((error) => {
+            console.error('Error rendering Recaptcha:', error.message);
+            showAlert("Something went wrong with Recaptcha. Please refresh the page and try again.", "negative");
+            return;
+          });
+        }
+
+        ////
+        document.getElementById("sendOtpBtn").onclick = async () => {
+          // Disable the button
+          this.disabled = true;
+          document.getElementById("sendOtpBtn").classList.add("disabled");
+          let phoneNumber = document.getElementById("phone").value.trim();
+
+          if (!phoneNumber.startsWith('+91')) {
+            phoneNumber = '+91' + phoneNumber;
+          }
+
+
+          if (!phoneNumber.length > 10) {
+            showAlert("Phone nubmer is incorrect!", "negative");
+            document.getElementById("loader_container").style.display = "none";
+            this.disabled = false;
+            document.getElementById("sendOtpBtn").classList.add("enabled");
+            return;
+          }
+
+          try {
+            // Reinitialize RecaptchaVerifier to ensure a fresh token
+            initializeRecaptcha();
+            const appVerifier = window.recaptchaVerifier;
+
+            // Trigger phone number authentication
+            const confirmationResult = await auth.signInWithPhoneNumber(phoneNumber, appVerifier);
+            window.confirmationResult = confirmationResult;
+
+            // showAlert("OTP sent to your phone number!");
+            document.getElementById("otpSection").style.display = "block";
+          } catch (error) {
+            this.disabled = false;
+            document.getElementById("sendOtpBtn").classList.add("enabled");
+
+            console.error('Error sending code:', error.message);
+            showAlert("Error in sending OTP. Please try again.");
+          }
+        };
+
+        document.getElementById("verifyOtpBtn").onclick = async () => {
+          this.disabled = true;
+          document.getElementById("verifyOtpBtn").classList.add("disabled");
+          const otp = document.getElementById("phoneOtp").value.trim();
+          try {
+            const result = await window.confirmationResult.confirm(otp);
+            user = result.user;
+
+          } catch (error) {
+            this.disabled = false;
+            document.getElementById("verifyOtpBtn").classList.add("enabled");
+
+            console.error('Error verifying OTP:', error.message);
+            // Check the error message or code to determine the specific issue
+            if (error.code === 'auth/invalid-verification-code') {
+              showAlert("Invalid OTP entered. Please check and try again.", "negative");
+            } else if (error.code === 'auth/code-expired') {
+              showAlert("The OTP has expired. Refresh page and try again.", "negative");
+            } else {
+              showAlert("Failed to verify OTP. Refresh page and try again.", "negative");
+            }
+          }
+        };
+
+
+        // ////
+        document.getElementById("submitBtn").onclick = async () => {
+          if (!validateUserData()) {
+            return;
+          }
+          else {
+            if (user.length > 0 && user.uid) {
+              addUserData(user);
+            }
+          }
+
+        };
+
+        function validateUserData() {
+          let isValid = true;
+
+          const fullName = document.getElementById("fullName").value.trim();
+          const email = document.getElementById("email").value.trim();
+          const phone = document.getElementById("phone").value.trim();
+          const phoneOtp = document.getElementById("phoneOtp").value.trim();
+          const password = document.getElementById("passwordInput").value;
+          const streetAddress = document.getElementById("streetAddress").value.trim();
+          const city = document.getElementById("city").value.trim();
+          const pincode = document.getElementById("pincode").value.trim();
+
+
+
+          let validateInput = (input) => typeof input === 'string' && /^[a-zA-Z0-9_\- &,.]+$/.test(input);
+          let validateNumberInput = (input, length) => typeof input === 'string' && /^\d+$/.test(input) && input.length === length;
+          let validateEmail = (input) => typeof input === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input);
+
+
+          // Full Name Validation
+          if (!validateInput(fullName)) {
+            showAlert("Full Name is required", "negative");
+            document.getElementById("loader_container").style.display = "none";
+            isValid = false;
+          }
+
+
+          // Email Validation
+          if (!validateEmail(email)) {
+            showAlert("Please enter a valid email address", "negative");
+            isValid = false;
+            document.getElementById("loader_container").style.display = "none";
+
+          }
+
+          if (password.trim() === "") {
+            showAlert("Password cannot be empty!", "negative");
+            document.getElementById("loader_container").style.display = "none";
+            isValid = false;
+          }
+          // Address Validation
+          if (!validateInput(streetAddress)) {
+            showAlert("Street address must be at least 5 characters", "negative");
+            isValid = false;
+            document.getElementById("loader_container").style.display = "none";
+          }
+
+          if (!validateInput(city)) {
+            showAlert("City is required", "negative");
+            isValid = false;
+            document.getElementById("loader_container").style.display = "none";
+          }
+
+          // Pincode Validation (6 digits)
+          if (!validateNumberInput(pincode, 6)) {
+            showAlert("Please enter a valid 6-digit pincode", "negative");
+            isValid = false;
+            document.getElementById("loader_container").style.display = "none";
+          }
+
+          return isValid;
+        }
+
+        async function addUserData(user) {
+          document.getElementById("loader_container").style.display = "flex";
+
+          if (validateUserData()) {
+            const fullName = document.getElementById("fullName").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const phone = document.getElementById("phone").value.trim();
+            const password = document.getElementById("passwordInput").value;
+            const streetAddress = document.getElementById("streetAddress").value.trim();
+            const city = document.getElementById("city").value.trim();
+            const pincode = document.getElementById("pincode").value.trim();
+
+            const hashedPassword = CryptoJS.SHA256(password).toString();
+            console.log("Hashed Password:", hashedPassword);
+
+            // Collect data from the formDiv
+            const formData = {
+              user, fullName, email, phone, streetAddress, city, pincode, hashedPassword
+            };
+            console.log("formData : " + formData);
+
+
+            // Send data to backend using fetch
             try {
-                const result = await confirmationResult.confirm(verificationCode);
-                const user = result.user;
+              const response = await fetch('/auth/signup', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+              });
 
-                // Send the verified user details to the backend if needed
-                const response = await fetch('/auth/verify-code', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ phoneNumber: user.phoneNumber, uid: user.uid })
-                });
+              const result = await response.json();
 
-                const backendResult = await response.json();
-                if (backendResult.success) {
-                    document.getElementById('status-message').innerText = "Phone number verified successfully!";
-                } else {
-                    document.getElementById('status-message').innerText = "Backend verification failed.";
-                }
+              if (result.type == "positive") {
+                showAlert('Account created successfully! Redirecting to profile page.', "positive");
+              } else if (result.type == "negative") {
+                showAlert("Something went wrong. Please refresh page and try again.", "negative");
+                document.getElementById("loader_container").style.display = "none";
+              }
             } catch (error) {
-                console.error('Error verifying code:', error);
-                document.getElementById('status-message').innerText = "Failed to verify code.";
+              console.error('Error:', error);
+              document.getElementById("loader_container").style.display = "none";
+              showAlert('An error occurred. Please try again.', "negative");
             }
-        });
+          }
+        }
+      });
     </script>
+
+
+
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Open Sans', sans-serif;
+      }
+
+      body {
+        background-color: rgb(243, 243, 243);
+      }
+
+      .disabled{
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .enabled{
+        opacity: 1;
+        cursor: pointer;
+      }
+
+      div.logo {
+        margin: 15px;
+        text-align: center;
+      }
+
+      div.logo>a {
+        text-decoration: none;
+        color: #0bb744;
+        font-weight: 800;
+        font-size: 20px;
+      }
+
+      div.logo>a span {
+        color: rgb(19, 19, 19);
+      }
+
+      .container {
+        position: fixed;
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: auto;
+      }
+
+      .container2 {
+        max-width: 550px;
+        width: 550px;
+        height: fit-content;
+        background: #fff;
+        padding: 20px;
+        margin: 10px;
+        border-radius: 8px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .container2 header {
+        font-size: 1.1rem;
+        color: #5a5a5a;
+        font-weight: 700;
+        text-align: center;
+        padding: 5px 10px 0 10px;
+      }
+
+      .container2 .formDiv {
+        margin-top: 10px;
+      }
+
+      .formDiv .input-box {
+        width: 100%;
+        margin-top: 20px;
+      }
+
+      .input-box label {
+        color: #333;
+        font-size: 13px;
+      }
+
+      .formDiv :where(.input-box input, .select-box) {
+        position: relative;
+        height: 40px;
+        width: 100%;
+        outline: none;
+        font-size: 13px;
+        color: #6b6b6b;
+        margin-top: 5px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        padding: 0 10px;
+        background-color: #fafafa;
+      }
+
+      .input-box input:focus {
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+      }
+
+      .formDiv .column {
+        display: flex;
+        column-gap: 15px;
+      }
+
+      .address :where(input, .select-box) {
+        margin-top: 15px;
+      }
+
+      .select-box select {
+        height: 100%;
+        width: 100%;
+        outline: none;
+        border: none;
+        color: #525252;
+        font-size: .9rem;
+        background-color: #f6f6f6;
+
+      }
+
+      .orderBtn,
+      .verifyOtpBtn,
+      .timer,
+      .togBtn {
+        height: 51px;
+        width: 100%;
+        color: #fff;
+        font-size: .9rem;
+        font-weight: 400;
+        margin-top: 35px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background: rgb(77, 215, 67);
+      }
+
+      .togBtn {
+        background-color: transparent;
+        color: black;
+      }
+
+      .verifyOtpBtn,
+      .timer {
+        margin-top: 32px;
+        height: 38px;
+        width: 100px;
+      }
+
+      .timer {
+        background-color: transparent;
+        color: black;
+        border: none;
+      }
+
+      .formDiv button:hover {
+        background: rgb(19, 172, 40);
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .visible {
+        display: block;
+      }
+
+      .visible-flex {
+        display: flex !important;
+      }
+
+      /*Responsive*/
+      @media screen and (max-width: 400px) {
+        .formDiv .column {
+          flex-wrap: wrap;
+        }
+
+        .container2 {
+          padding: 10px;
+        }
+      }
+    </style>
 </body>
+
 </html>

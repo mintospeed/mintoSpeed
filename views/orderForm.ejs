@@ -6,6 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Delivery Information - mintoSpeed</title>
+     <!-- fav icon -->
+    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+  
     <!-- google font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -253,9 +260,27 @@
                                 const actionButtons = document.querySelector('.btnBoxContainer');
                                 messageBoxHead.innerHTML = `<i style="margin-right: 10px" class="fa-regular fa-paper-plane"></i>Order Placed Successfully!`;
                                 
+                                messageBoxP.classList.add('flex-class'); 
                                 messageBoxP.innerHTML = `<p>Your order placed successfully and will be deliver soon.</p>
-                                <p>Go to profile to see your order status.</p>`;
-                                
+                                <p>Go to profile to see your order status.</p>
+                                <h2 class="coupan_head" style="color: green; margin: 20px 0px; font-size: 16px; text-align: center; font-weight: 700;">Congratulation you won a Coupan!</h2>
+    <div class="coupon-card">
+        <div class="coupon-content">
+            <div>
+                <p class="discount">10% OFF</p>
+                <p>ON ANY DISHES IN</p>
+                <h2 class="restaurant-name">Akshat Restaurant</h2>
+                <p class="address">123 Flavor Street, Food City, Prayagraj, Uttar Pradesh</p>
+                <p class="special-item">Specialty in Grilled Salmon, morning cuisine, italian noodels.</p>
+                <br>
+                <p>Coupan code : XDJG52 DFED5</p>
+                <P style="color: rgb(221, 193, 193);">Expire on : 5 Jan 2025</P>
+
+            </div>
+        </div>
+    </div>`;
+    const couponCard = document.querySelector('.coupon-card');
+    couponCard.style.backgroundImage = "url('../images/rest.jpeg')";
                                 actionButtons.innerHTML = `<button type="button" class="messageBoxBtn" style="background-color: #cecece; color: black;"><a style="text-decoration: none; color: black;" href="/">Homepage</a></button>
                                 <button type="button" class="messageBoxBtn" id="profileBtn"><a style="text-decoration: none; color: white;" href="/profile">Profile</a></button>`;
 
@@ -281,7 +306,75 @@
         </script>
 
 
+<style>
+    .flex-class{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+.coupon-card {
+            padding: 8px;
+            width: 178px!important;
+            height: 240px!important;
+            /* Use a  image here */
+            background-size: cover;
+            background-position: center;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            color: white;
+            position: relative;
+        }
 
+        .coupon-content {
+            /* backdrop-filter: blur(2px); */
+            background-color: rgba(0, 0, 0, 0.5);
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .restaurant-name {
+            font-size: 17px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            margin-top: 8px;
+            color: rgb(236, 235, 233);
+        }
+
+        .coupon-content .address,
+        .coupon-content .special-item {
+            font-size: 10px;
+            margin-bottom: 8px;
+        }
+
+        .coupon-content p,
+        .coupon-content h2 {
+            text-align: center;
+        }
+
+        .coupon-content p {
+            margin: 3px 3px;
+            line-height: 1.4;
+            font-size: 10px;
+        }
+
+        .coupon-content .discount {
+            margin-top: 10px;
+            margin-bottom: 8px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            color: #f9f8f6;
+        }
+</style>
 
         <style>
             * {

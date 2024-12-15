@@ -13,14 +13,14 @@ return res.render('admin/adminLogin', { nonce: res.locals.nonce, activePage: 'ad
 // Admin login route
 router.post('/login', (req, res) => {
     const adminCredentials = {
-        username: 'admin',
-        password: '12345678',
+        username: 'ritik@admin',
+        password: 'hp9897',
     };
 
     const { username, password } = req.body;
 
     if (username === adminCredentials.username && password === adminCredentials.password) {
-        const token = jwt.sign({ username, role: 'admin' }, jwtSecret, { expiresIn: '1h' });
+        const token = jwt.sign({ username, role: 'admin' }, jwtSecret, { expiresIn: '24h' });
 
         res.cookie('authToken', token, {
             maxAge: 24 * 60 * 60 * 1000, // 1 day

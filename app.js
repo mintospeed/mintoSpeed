@@ -51,15 +51,17 @@ app.use((req, res, next) => {
     res.locals.nonce = nonce;
     res.setHeader('Content-Security-Policy', `
         default-src 'self';
-        script-src 'self' https://kit.fontawesome.com https://ajax.googleapis.com 'nonce-${nonce}' https://www.google.com https://www.gstatic.com;
+        script-src 'self' https://kit.fontawesome.com https://ajax.googleapis.com https://cdnjs.cloudflare.com 'nonce-${nonce}' https://www.google.com https://www.gstatic.com;
         style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com;
         font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
-        connect-src 'self' https://ka-f.fontawesome.com https://www.googleapis.com https://firebase.googleapis.com https://identitytoolkit.googleapis.com;
+        connect-src 'self' https://ka-f.fontawesome.com https://www.googleapis.com https://firebase.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com;
         img-src 'self' https://storage.googleapis.com https://www.gstatic.com;
         frame-src 'self' https://www.google.com https://www.gstatic.com;
+        frame-ancestors 'self' https://www.google.com;
     `.replace(/\n/g, ''));
     next();
 });
+
 
 // Rate limiting
 const limiter = rateLimit({
@@ -103,7 +105,6 @@ app.use('/auth', authRoutes);
 app.use('/', indexRoutes);
 app.use('/items', itemsRoutes);
 app.use('/cart', cartRoutes);
-app.use('/admin', adminRoutes);
 app.use('/orderForm', orderFormRoutes);
 app.use('/complaint', complaintRoutes);
 app.use('/feedback', feedbackRoutes);
@@ -111,6 +112,7 @@ app.use('/profile', profileRoutes);
 app.use('/track', trackRoutes);
 app.use('/orders', ordersRoutes);
 app.use('/order-details', viewDetailsRoutes);
+app.use('/admin983', adminRoutes);
 app.use('/dashboard', dashboardRoutes);
 app.use('/dashboard/pendingOrders', adminPendingOrdersRoutes);
 app.use('/dashboard/completedOrders', adminCompletedOrdersRoutes);
