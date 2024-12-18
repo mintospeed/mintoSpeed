@@ -8,34 +8,34 @@ const helmet = require('helmet');
 const crypto = require('crypto');
 const cookieParser = require('cookie-parser');
 const { v4: uuidv4 } = require('uuid'); // Unique user IDs
-const admin = require('firebase-admin');
+// const admin = require('firebase-admin');
 
 
 
-// Initialize Firebase Admin SDK only once
-    admin.initializeApp({
-        credential: admin.credential.cert({
-            projectId: process.env.FIREBASE_PROJECT_ID,
-            clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-            privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n')
-        }),
-        databaseURL: process.env.FIREBASE_DATABASE_URL,
-        storageBucket: process.env.FIREBASE_STORAGE_BUCKET
-    });
+// // Initialize Firebase Admin SDK only once
+//     admin.initializeApp({
+//         credential: admin.credential.cert({
+//             projectId: process.env.FIREBASE_PROJECT_ID,
+//             clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+//             privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n')
+//         }),
+//         databaseURL: process.env.FIREBASE_DATABASE_URL,
+//         storageBucket: process.env.FIREBASE_STORAGE_BUCKET
+//     });
 
-const database = admin.database(); // Initialize the Realtime Database
-const firestore = admin.firestore(); // Initialize Firestore
-const auth = admin.auth(); 
+// const database = admin.database(); // Initialize the Realtime Database
+// const firestore = admin.firestore(); // Initialize Firestore
+// const auth = admin.auth(); 
 
 
-// Firebase injection middleware
-app.use((req, res, next) => {
-    req.database = admin.database();
-    req.firestore = admin.firestore();
-    req.Timestamp = admin.firestore.Timestamp; 
-    req.auth = admin.auth();
-    next();
-});
+// // Firebase injection middleware
+// app.use((req, res, next) => {
+//     req.database = admin.database();
+//     req.firestore = admin.firestore();
+//     req.Timestamp = admin.firestore.Timestamp; 
+//     req.auth = admin.auth();
+//     next();
+// });
 
 
 // Middleware setup
