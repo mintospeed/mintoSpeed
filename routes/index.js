@@ -10,6 +10,7 @@ const { convertToGrams, generateUniqueId } = require('../utilities/utility');
 const fetchSectionQuantity = 1;
 const maxageTime = 12 * 60 * 60 * 1000; //12 hours
 const maxageTimeForTempId = 6 * 30 * 24 * 60 * 60 * 1000; // 6 months
+const validateUser = require('../middlewares/validateUser');
 
 const setCartCookie = require('../middlewares/cartCookie');
 
@@ -224,12 +225,10 @@ router.post('/get_grocery_items', async (req, res) => {
 
 
 // Backend: /add_to_cart endpoint
-router.post('/add_to_cart', async (req, res) => {
+router.post('/add_to_cart', validateUser, async (req, res) => {
     let { item_name: itemName, item_weight: itemWeight, itemCategory, itemSubCategory } = req.body;
 
-    let userId = req.cookies.userId || req.cookies.tempId || generateUniqueId(36); // Use tempId if userId is not available
-    let tempUser = !req.cookies.userId;
-    let sendTempId = !req.cookies.userId && !req.cookies.tempId;
+    let userId = req.userId; // Use tempId if userId is not available
     let totalCartItem = 0;
 
     // Validation
@@ -292,19 +291,6 @@ router.post('/add_to_cart', async (req, res) => {
                 }
             }
 
-
-            //add tempId cookie if no user found in cookie
-            if (sendTempId) {
-
-                res.cookie('tempId', userId, {
-                    maxAge: maxageTimeForTempId,
-                    httpOnly: true,
-                    // secure: process.env.NODE_ENV === 'production',  // Sends the cookie only over HTTPS in production
-                    sameSite: 'Strict'
-                });
-            }
-
-
             // update totalCart cookie
             const totalCart = req.cookies.totalCart;
 
@@ -314,7 +300,7 @@ router.post('/add_to_cart', async (req, res) => {
                 res.cookie('totalCart', ( parseInt(totalCart, 10) + 1), {
                     maxAge: maxageTime,
                     httpOnly: true,
-                    // secure: process.env.NODE_ENV === 'production',  // Uncomment if needed
+                    secure: process.env.NODE_ENV === 'production',  // Uncomment if needed
                     sameSite: 'Strict'
                 });
 
@@ -327,7 +313,7 @@ router.post('/add_to_cart', async (req, res) => {
                     res.cookie('totalCart', 1, {
                         maxAge: maxageTime,
                         httpOnly: true,
-                        // secure: process.env.NODE_ENV === 'production',  // Uncomment if needed
+                        secure: process.env.NODE_ENV === 'production',  // Uncomment if needed
                         sameSite: 'Strict'
                     });
 
@@ -338,6 +324,7 @@ router.post('/add_to_cart', async (req, res) => {
                     res.cookie('totalCart', 1, {
                         maxAge: maxageTime,
                         httpOnly: true,
+                        secure: process.env.NODE_ENV === 'production',
                         sameSite: 'Strict'
                     });
                 }

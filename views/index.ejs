@@ -6,8 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>mintoSpeed - Get fresh groceries and everyday essentials delivered straight to your door</title>
-    <meta name="description" content="Get fresh groceries, pantry staples, and everyday essentials delivered straight to your door. Shop conveniently with mintoSpeed!">
-    <meta name="keywords" content="groceries, grocery delivery, fresh produce, online shopping, pantry essentials, grocery store">
+    <meta name="description"
+        content="Get fresh groceries, pantry staples, and everyday essentials delivered straight to your door. Shop conveniently with mintoSpeed!">
+    <meta name="keywords"
+        content="groceries, grocery delivery, fresh produce, online shopping, pantry essentials, grocery store">
     <meta name="author" content="mintoSpeed">
     <meta name="robots" content="index, follow">
 
@@ -18,7 +20,7 @@
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
     <link rel="manifest" href="/favicon/site.webmanifest" />
-  
+
     <!-- google font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -41,6 +43,7 @@
             box-sizing: border-box;
             scroll-behavior: smooth;
             font-family: 'Open Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -164,9 +167,10 @@
                     font-size: 33px;
                     margin-top: 5px;
                 }
+
                 .sec1111 button {
-                        padding: 10px 18px;
-                    }
+                    padding: 10px 18px;
+                }
 
                 @media screen and (max-width: 900px) {
                     .sec11 {
@@ -215,30 +219,33 @@
             <!-- categories -->
 
             <section class="content">
-                <% if (typeof categoryNames !== 'undefined' && categoryNames.length> 0) { %>
-                <div class="">
-                    <h2 class="content_head">select product by categories</h2>
+                <% if (typeof categoryNames !=='undefined' && categoryNames.length> 0) { %>
+                    <div class="">
+                        <h2 class="content_head">select product by categories</h2>
 
-                    <div class="content1">
-                        <!-- leftright btn -->
-                        <div class="left_btn" id="leftContentBtn"><i class="fa-solid fa-chevron-left"></i></div>
-                        <div class="right_btn" id="rightContentBtn"><i class="fa-solid fa-chevron-right"></i></div>
-                        <div class="content2">
-                            <!-- contact list -->
-                            <div class="content3">
-                                <% categoryNames.forEach(category=> { %>
-                                <div class="grocery_type">
-                                    <a href="/items?i=<%= category.value %>">
-                                        <img src="https://storage.googleapis.com/groscool-49709.appspot.com/images%2F8d8ad9d2-d295-4835-a095-ff6dcdf11bab-g1.png" alt="img" />
-                                        <p><%= category.key %></p>
-                                    </a>
+                        <div class="content1">
+                            <!-- leftright btn -->
+                            <div class="left_btn" id="leftContentBtn"><i class="fa-solid fa-chevron-left"></i></div>
+                            <div class="right_btn" id="rightContentBtn"><i class="fa-solid fa-chevron-right"></i></div>
+                            <div class="content2">
+                                <!-- contact list -->
+                                <div class="content3">
+                                    <% categoryNames.forEach(category=> { %>
+                                        <div class="grocery_type">
+                                            <a href="/items?i=<%= category.value %>">
+                                                <img src="https://storage.googleapis.com/groscool-49709.appspot.com/images%2F8d8ad9d2-d295-4835-a095-ff6dcdf11bab-g1.png"
+                                                    alt="img" />
+                                                <p>
+                                                    <%= category.key %>
+                                                </p>
+                                            </a>
+                                        </div>
+                                        <% }) %>
                                 </div>
-                                <% }) %>
                             </div>
                         </div>
                     </div>
-                </div>
-                <% } %>
+                    <% } %>
             </section>
 
             <style>
@@ -364,215 +371,236 @@
                 }
             </style>
 
-<script nonce="<%-nonce%>">
-    // Detect if the device supports touch events
-    function isTouchDevice() {
-        return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    }
-
-    // Function to toggle button visibility based on scroll position
-    function updateButtonVisibility(slider, leftBtn, rightBtn) {
-        const maxScrollLeft = slider.scrollWidth - slider.clientWidth;
-        if (slider.scrollLeft <= 0) {
-            leftBtn.style.display = 'none'; 
-        } else {
-            leftBtn.style.display = 'block'; 
-        }
-
-        if (slider.scrollLeft >= maxScrollLeft) {
-            rightBtn.style.display = 'none'; 
-        } else {
-            rightBtn.style.display = 'block'; 
-        }
-    }
-
-    // Apply functionality for each section
-    document.querySelectorAll('.content').forEach(section => {
-        const slider = section.querySelector('.content2');
-        const leftBtn = section.querySelector('.left_btn');
-        const rightBtn = section.querySelector('.right_btn');
-        const deviceWidth = window.innerWidth; // Get the width of the viewport
-
-        // Hide buttons initially if on touch devices
-        if (isTouchDevice()) {
-            if (leftBtn) leftBtn.style.display = 'none';
-            if (rightBtn) rightBtn.style.display = 'none';
-        } else {
-            // Initialize button visibility
-            updateButtonVisibility(slider, leftBtn, rightBtn);
-        }
-
-        slider.addEventListener('scroll', () => {
-            updateButtonVisibility(slider, leftBtn, rightBtn);
-        });
-
-        if (leftBtn) {
-            leftBtn.addEventListener('click', () => {
-                slider.scrollLeft -= deviceWidth * 0.6; 
-            });
-        }
-
-        if (rightBtn) {
-            rightBtn.addEventListener('click', () => {
-                slider.scrollLeft += deviceWidth * 0.6; // Scroll right by 60% of device width
-            });
-        }
-
-        // Recheck button visibility on window resize
-        window.addEventListener('resize', () => {
-            updateButtonVisibility(slider, leftBtn, rightBtn);
-        });
-    });
-</script>
-
-
-
-            <div id="grocery-sections">
-                <% if (typeof categories !== 'undefined' && categories.length> 0) { %>
-
-                <% categories.forEach(category=> { %>
-                    <!-- Grocery item section -->
-                    <section class="grocery" data-category="<%= category.id %>">
-                        <div>
-                            <!-- Category Title -->
-                            <h2 class="grocery_head"><%= category.id %></h2>
-
-                            <!-- Subcategory Navigation -->
-                            <div class="subCategoryDIv">
-                                <div class="left_btn"><i class="fa-solid fa-chevron-left"></i></div>
-                                <div class="right_btn"><i class="fa-solid fa-chevron-right"></i>
-                                </div>
-                                <div class="content2" style="padding: 0 5px;">
-                                    <div class="content3">
-                                        <% category.subcategories.forEach((subcategory, index)=> { %>
-                                            <!-- Subcategory Button, highlight the first subcategory as selected -->
-                                            <div class="grocery_type subCatElement <%= index === 0 ? 'selected' : '' %>"
-                                                data-subCategoryBtn="<%= subcategory.id %>"><%= subcategory.id %></div>
-                                            <% }) %>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Items Container for Selected Subcategory -->
-                            <div class="grocery_items_container">
-                                <% category.subcategories.forEach((subcategory, index)=> { %>
-                                    <!-- Display items only for the first subcategory by default -->
-                                    <% if (index===0) { %>
-                                        <div class="grocery_items" id="grocery_items_<%= subcategory.id %>"
-                                            data-subCategory="<%= subcategory.id %>">
-
-                                            <% subcategory.items.forEach(item=> { %>
-                                                <div class="grocery_item" data-packed="<%= item.packed %>"
-                                                    data-itemCategory="<%= category.id %>"
-                                                    data-itemSubCategory="<%= subcategory.id %>">
-
-                                                    <div class="item_img">
-                                                        <img src="<%= item.image_url %>" alt="img" />
-                                                    </div>
-                                                    <p class="item_name"><%= item.id %></p>
-                                                    <p class="item_min_volume"><%= item.minVol %></p>
-                                                    <p class="item_max_volume"><%= item.maxVol %></p>
-
-                                                    <div class="item_volume">
-                                                        <p class="item_weight" style="margin: 0;"><%= item.volume %></p>
-                                                        <div class="item_volume_options">
-                                                            <% if (item.packed) { %>
-                                                                <!-- item is packed -->
-                                                                <% } else { %>
-                                                                    <% item.options.forEach(option=> { %>
-                                                                        <div class="item_volume_option">
-                                                                            <p class="item_option_weight"><%= option.weight %></p>
-                                                                            <p class="item_option_price"><%= option.price %></p>
-                                                                        </div>
-                                                                        <% }) %>
-                                                                            <% } %>
-
-                                                                                <!-- custom option -->
-                                                                                <div class="item_volume_custom_option">
-                                                                                    <p
-                                                                                        class="item_volume_custom_option_head">
-                                                                                        Custom</p>
-                                                                                    <div
-                                                                                        class="item_volume_custom_option_input_div">
-                                                                                        <% if (item.packed) { %>
-                                                                                            <!-- If item is packed, show text "pieces" -->
-                                                                                            <input type="number"
-                                                                                                class="item_volume_input_number"
-                                                                                                placeholder="Qty"
-                                                                                                min="0" step="1" />
-                                                                                            <div
-                                                                                                class="item_volume_custom_option_for_pieces">
-                                                                                                pcs</div>
-                                                                                            <% } else { %>
-                                                                                                <input type="number"
-                                                                                                    class="item_volume_input_number"
-                                                                                                    placeholder="Qty"
-                                                                                                    min="0" />
-                                                                                                <div
-                                                                                                    class="item_volume_custom_option_for_kggm">
-                                                                                                    <label><input
-                                                                                                            type="radio"
-                                                                                                            name="kggm"
-                                                                                                            checked
-                                                                                                            value="kg">kg</label>
-                                                                                                    <label><input
-                                                                                                            type="radio"
-                                                                                                            name="kggm"
-                                                                                                            value="gm">gm</label>
-                                                                                                </div>
-                                                                                                <% } %>
-                                                                                    </div>
-                                                                                    <p class="item_volume_input_price">0</p>
-                                                                                    <button class="item_volume_custom_option_done_btn">Done</button>
-                                                                                </div>
-                                                        </div>
-                                                    </div>
-                                                    <p class="item_price">
-                                                        <%= item.price %>
-                                                    </p>
-                                                    <button class="item_add_btn">Add</button>
-                                                </div>
-                                                <% }) %>
-                                        </div>
-                                        <% } %>
-                                            <% }) %>
-                            </div>
-
-
-                        </div>
-                    </section>
-                    <% }) %>
-
-                        <div id="load-more-trigger"></div>
-                        <!-- Target element for triggering additional content load -->
-                        <% } else { %>
-                            <p style="text-align: center; margin-top: 50px; margin-bottom: 100px;">No item found.</p>
-                        <% } %>
-            </div>
-
-            <!-- loading sections showing -->
-             <div class="showingLoading">
-                <div class="loader" id="loadingRotatorForSections"></div>
-             </div>
-
-
-
-             <!-- scroll -->
-             <script nonce="<%-nonce%>">
+            <script nonce="<%-nonce%>">
                 // Detect if the device supports touch events
                 function isTouchDevice() {
                     return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
                 }
-          
+
+                // Function to toggle button visibility based on scroll position
+                function updateButtonVisibility(slider, leftBtn, rightBtn) {
+                    const maxScrollLeft = slider.scrollWidth - slider.clientWidth;
+                    if (slider.scrollLeft <= 0) {
+                        leftBtn.style.display = 'none';
+                    } else {
+                        leftBtn.style.display = 'block';
+                    }
+
+                    if (slider.scrollLeft >= maxScrollLeft) {
+                        rightBtn.style.display = 'none';
+                    } else {
+                        rightBtn.style.display = 'block';
+                    }
+                }
+
+                // Apply functionality for each section
+                document.querySelectorAll('.content').forEach(section => {
+                    const slider = section.querySelector('.content2');
+                    const leftBtn = section.querySelector('.left_btn');
+                    const rightBtn = section.querySelector('.right_btn');
+                    const deviceWidth = window.innerWidth; // Get the width of the viewport
+
+                    // Hide buttons initially if on touch devices
+                    if (isTouchDevice()) {
+                        if (leftBtn) leftBtn.style.display = 'none';
+                        if (rightBtn) rightBtn.style.display = 'none';
+                    } else {
+                        // Initialize button visibility
+                        updateButtonVisibility(slider, leftBtn, rightBtn);
+                    }
+
+                    slider.addEventListener('scroll', () => {
+                        updateButtonVisibility(slider, leftBtn, rightBtn);
+                    });
+
+                    if (leftBtn) {
+                        leftBtn.addEventListener('click', () => {
+                            slider.scrollLeft -= deviceWidth * 0.6;
+                        });
+                    }
+
+                    if (rightBtn) {
+                        rightBtn.addEventListener('click', () => {
+                            slider.scrollLeft += deviceWidth * 0.6; // Scroll right by 60% of device width
+                        });
+                    }
+
+                    // Recheck button visibility on window resize
+                    window.addEventListener('resize', () => {
+                        updateButtonVisibility(slider, leftBtn, rightBtn);
+                    });
+                });
+            </script>
+
+
+
+            <div id="grocery-sections">
+                <% if (typeof categories !=='undefined' && categories.length> 0) { %>
+
+                    <% categories.forEach(category=> { %>
+                        <!-- Grocery item section -->
+                        <section class="grocery" data-category="<%= category.id %>">
+                            <div>
+                                <!-- Category Title -->
+                                <h2 class="grocery_head">
+                                    <%= category.id %>
+                                </h2>
+
+                                <!-- Subcategory Navigation -->
+                                <div class="subCategoryDIv">
+                                    <div class="left_btn"><i class="fa-solid fa-chevron-left"></i></div>
+                                    <div class="right_btn"><i class="fa-solid fa-chevron-right"></i>
+                                    </div>
+                                    <div class="content2" style="padding: 0 5px;">
+                                        <div class="content3">
+                                            <% category.subcategories.forEach((subcategory, index)=> { %>
+                                                <!-- Subcategory Button, highlight the first subcategory as selected -->
+                                                <div class="grocery_type subCatElement <%= index === 0 ? 'selected' : '' %>"
+                                                    data-subCategoryBtn="<%= subcategory.id %>">
+                                                    <%= subcategory.id %>
+                                                </div>
+                                                <% }) %>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Items Container for Selected Subcategory -->
+                                <div class="grocery_items_container">
+                                    <% category.subcategories.forEach((subcategory, index)=> { %>
+                                        <!-- Display items only for the first subcategory by default -->
+                                        <% if (index===0) { %>
+                                            <div class="grocery_items" id="grocery_items_<%= subcategory.id %>"
+                                                data-subCategory="<%= subcategory.id %>">
+
+                                                <% subcategory.items.forEach(item=> { %>
+                                                    <div class="grocery_item" data-packed="<%= item.packed %>"
+                                                        data-itemCategory="<%= category.id %>"
+                                                        data-itemSubCategory="<%= subcategory.id %>">
+
+                                                        <div class="item_img">
+                                                            <img src="<%= item.image_url %>" alt="img" />
+                                                        </div>
+                                                        <p class="item_name">
+                                                            <%= item.id %>
+                                                        </p>
+                                                        <p class="item_min_volume">
+                                                            <%= item.minVol %>
+                                                        </p>
+                                                        <p class="item_max_volume">
+                                                            <%= item.maxVol %>
+                                                        </p>
+
+                                                        <div class="item_volume">
+                                                            <p class="item_weight" style="margin: 0;">
+                                                                <%= item.volume %>
+                                                            </p>
+                                                            <div class="item_volume_options">
+                                                                <% if (item.packed) { %>
+                                                                    <!-- item is packed -->
+                                                                    <% } else { %>
+                                                                        <% item.options.forEach(option=> { %>
+                                                                            <div class="item_volume_option">
+                                                                                <p class="item_option_weight">
+                                                                                    <%= option.weight %>
+                                                                                </p>
+                                                                                <p class="item_option_price">
+                                                                                    <%= option.price %>
+                                                                                </p>
+                                                                            </div>
+                                                                            <% }) %>
+                                                                                <% } %>
+
+                                                                                    <!-- custom option -->
+                                                                                    <div
+                                                                                        class="item_volume_custom_option">
+                                                                                        <p
+                                                                                            class="item_volume_custom_option_head">
+                                                                                            Custom</p>
+                                                                                        <div
+                                                                                            class="item_volume_custom_option_input_div">
+                                                                                            <% if (item.packed) { %>
+                                                                                                <!-- If item is packed, show text "pieces" -->
+                                                                                                <input type="number"
+                                                                                                    class="item_volume_input_number"
+                                                                                                    placeholder="Qty"
+                                                                                                    min="0" step="1" />
+                                                                                                <div
+                                                                                                    class="item_volume_custom_option_for_pieces">
+                                                                                                    pcs</div>
+                                                                                                <% } else { %>
+                                                                                                    <input type="number"
+                                                                                                        class="item_volume_input_number"
+                                                                                                        placeholder="Qty"
+                                                                                                        min="0" />
+                                                                                                    <div
+                                                                                                        class="item_volume_custom_option_for_kggm">
+                                                                                                        <label><input
+                                                                                                                type="radio"
+                                                                                                                name="kggm"
+                                                                                                                checked
+                                                                                                                value="kg">kg</label>
+                                                                                                        <label><input
+                                                                                                                type="radio"
+                                                                                                                name="kggm"
+                                                                                                                value="gm">gm</label>
+                                                                                                    </div>
+                                                                                                    <% } %>
+                                                                                        </div>
+                                                                                        <p
+                                                                                            class="item_volume_input_price">
+                                                                                            0</p>
+                                                                                        <button
+                                                                                            class="item_volume_custom_option_done_btn">Done</button>
+                                                                                    </div>
+                                                            </div>
+                                                        </div>
+                                                        <p class="item_price">
+                                                            <%= item.price %>
+                                                        </p>
+                                                        <button class="item_add_btn">Add</button>
+                                                    </div>
+                                                    <% }) %>
+                                            </div>
+                                            <% } %>
+                                                <% }) %>
+                                </div>
+
+
+                            </div>
+                        </section>
+                        <% }) %>
+
+                            <div id="load-more-trigger"></div>
+                            <!-- Target element for triggering additional content load -->
+                            <% } else { %>
+                                <p style="text-align: center; margin-top: 50px; margin-bottom: 100px;">No item found.
+                                </p>
+                                <% } %>
+            </div>
+
+            <!-- loading sections showing -->
+            <div class="showingLoading">
+                <div class="loader" id="loadingRotatorForSections"></div>
+            </div>
+
+
+
+            <!-- scroll -->
+            <script nonce="<%-nonce%>">
+                // Detect if the device supports touch events
+                function isTouchDevice() {
+                    return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+                }
+
                 // Function to initialize scroll functionality for a single section
                 function initializeScrollFunctionality(section) {
                     const slider = section.querySelector('.content2');
                     const leftBtn = section.querySelector('.left_btn');
                     const rightBtn = section.querySelector('.right_btn');
                     const deviceWidth = window.innerWidth; // Get the width of the viewport
-            
+
                     if (!slider || !leftBtn || !rightBtn) return;
-            
+
                     // Hide buttons initially if on touch devices
                     if (isTouchDevice()) {
                         leftBtn.style.display = 'none';
@@ -581,33 +609,33 @@
                         // Initialize button visibility
                         updateButtonVisibility(slider, leftBtn, rightBtn);
                     }
-            
+
                     // Add scroll event listener to update button visibility
                     slider.addEventListener('scroll', () => {
                         updateButtonVisibility(slider, leftBtn, rightBtn);
                     });
-            
+
                     // Add click functionality for scrolling
                     leftBtn.addEventListener('click', () => {
                         slider.scrollLeft -= deviceWidth * 0.6; // Scroll left by 60% of device width
                     });
-            
+
                     rightBtn.addEventListener('click', () => {
                         slider.scrollLeft += deviceWidth * 0.6; // Scroll right by 60% of device width
                     });
-            
+
                     // Recheck button visibility on window resize
                     window.addEventListener('resize', () => {
                         updateButtonVisibility(slider, leftBtn, rightBtn);
                     });
                 }
-            
-              </script>
-            
+
+            </script>
+
 
 
             <style>
-                .showingLoading{
+                .showingLoading {
                     height: 200px;
                     width: 100%;
                     display: flex;
@@ -616,36 +644,36 @@
                 }
 
                 .loader {
-            border: 7px solid #b6b5b5;
-            border-radius: 50%;
-            border-top: 7px solid #0f952e;
-            width: 40px;
-            height: 40px;
-            -webkit-animation: spin 1s linear infinite;
-            /* Safari */
-            animation: spin 1s linear infinite;
-        }
+                    border: 7px solid #b6b5b5;
+                    border-radius: 50%;
+                    border-top: 7px solid #0f952e;
+                    width: 40px;
+                    height: 40px;
+                    -webkit-animation: spin 1s linear infinite;
+                    /* Safari */
+                    animation: spin 1s linear infinite;
+                }
 
-        /* Safari */
-        @-webkit-keyframes spin {
-            0% {
-                -webkit-transform: rotate(0deg);
-            }
+                /* Safari */
+                @-webkit-keyframes spin {
+                    0% {
+                        -webkit-transform: rotate(0deg);
+                    }
 
-            100% {
-                -webkit-transform: rotate(360deg);
-            }
-        }
+                    100% {
+                        -webkit-transform: rotate(360deg);
+                    }
+                }
 
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
+                @keyframes spin {
+                    0% {
+                        transform: rotate(0deg);
+                    }
 
-            100% {
-                transform: rotate(360deg);
-            }
-        }
+                    100% {
+                        transform: rotate(360deg);
+                    }
+                }
 
                 .hidden {
                     display: none;
@@ -1336,7 +1364,7 @@
 
                         // Event listener for custom weight input changes
                         inputWeightElement.addEventListener('input', function (event) {
-                            const value = parseFloat(event.target.value);
+                            const value = parseFloat(event.target.value.trim());
                             if (value < 0) {
                                 event.target.value = 0;
                             }
@@ -1346,7 +1374,7 @@
                         // Event listener for kg/gm radio button changes
                         radioButtonKggm.forEach(function (radioButton) {
                             radioButton.addEventListener('change', function () {
-                                getClosestWeightAndPrice(inputWeightElement.value, false, this);
+                                getClosestWeightAndPrice(inputWeightElement.value.trim(), false, this);
                             });
                         });
 
@@ -1362,7 +1390,7 @@
                                 const minVol = convertToGrams(getSafeTextContent(minVolume));
                                 const maxVol = convertToGrams(getSafeTextContent(maxVolume));
 
-                                const weight = inputData + " " + selectedKggm.value;
+                                const weight = inputData + " " + selectedKggm.value.trim();
                                 const targetWeight = convertToGrams(weight);
                                 const weightElements = dropdown.querySelectorAll('.item_option_weight');
                                 const priceElements = dropdown.querySelectorAll('.item_option_price');
@@ -1537,8 +1565,8 @@
 
 
 
-<!-- footer -->
-<%- include('partials/footer') %>
+            <!-- footer -->
+            <%- include('partials/footer') %>
 </body>
 
 </html>

@@ -3,7 +3,7 @@ const { jwtSecret } = require('../config/keys.js');
 
 
 module.exports = (req, res, next) => {
-    const authHeader =  req.cookies.authToken;
+    const authHeader = req.cookies.authToken;
 
     console.log('Authorization Header:', authHeader); // Log the header
 
@@ -28,10 +28,10 @@ module.exports = (req, res, next) => {
         req.admin = decoded; // Attach token info to request
         console.log('Middleware passed, calling next()');
         next();
-        console.log('This will not print since control moves to the next handler');
+        return;
     } catch (error) {
         console.error('Token verification failed:', error.message); // Log errors
-        res.status(403).send('Invalid token.');
+        return res.status(403).send('Invalid token.');
     }
 };
 

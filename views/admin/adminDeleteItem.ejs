@@ -90,7 +90,7 @@
           if(inputElement == null){
             return null;
           }
-          const input = inputElement.value;
+          const input = inputElement.value.trim();
           if (/[.#\[\]$<>\/]/.test(input) || input.length < 1) {
             showAlert("Blank or Input contains harmful characters like ., #, $, [, ], < or >. Please remove them.", "negative");
             inputElement.style.border = "1px solid red";
@@ -219,7 +219,7 @@
         // Populate subcategories when category changes
         document.getElementById("categorySelect").addEventListener("change", function () {
           console.log("er 22");
-          const selectedCategory = this.value;
+          const selectedCategory = this.value.trim();
           if (selectedCategory !== "new") {
             populateSubcategories(selectedCategory);
           }
@@ -228,8 +228,8 @@
         // Populate items when subcategory changes
         document.getElementById("subcategorySelect").addEventListener("change", function () {
           console.log("er 25.3");
-          const selectedCategory = document.getElementById("categorySelect").value;
-          const selectedSubCategory = this.value;
+          const selectedCategory = document.getElementById("categorySelect").value.trim();
+          const selectedSubCategory = this.value.trim();
           populateItem(selectedCategory, selectedSubCategory);
         });
 

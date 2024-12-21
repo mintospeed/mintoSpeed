@@ -1,361 +1,371 @@
+<!-- nav 1 -->
+<nav class="nav1">
+  <ul class="nav1_ul2">
+    <li><i class="fa-solid fa-phone" style="padding-top: 2px;"></i>&nbsp;&nbsp;<a href="tel:919865586545"><span
+          class="nav1_icon_head">Call&nbsp;:&nbsp;</span>+91 9865586545</a></li>
+    <li><i class="fa-regular fa-envelope" style="padding-top: 2px;"></i>&nbsp;&nbsp;<a
+        href="mailto:ivlog.site@gmail.com"><span
+          class="nav1_icon_head">Email&nbsp;:&nbsp;</span><span>contact@mintospeed.com</span></a></li>
+  </ul>
 
-  <!-- nav 1 -->
-  <nav class="nav1">
-    <ul class="nav1_ul2">
-      <li><i class="fa-solid fa-phone" style="padding-top: 2px;"></i>&nbsp;&nbsp;<a href="tel:919865586545"><span
-            class="nav1_icon_head">Call&nbsp;:&nbsp;</span>+91 9865586545</a></li>
-      <li><i class="fa-regular fa-envelope" style="padding-top: 2px;"></i>&nbsp;&nbsp;<a
-          href="mailto:ivlog.site@gmail.com"><span
-            class="nav1_icon_head">Email&nbsp;:&nbsp;</span><span>contact@mintospeed.com</span></a></li>
-    </ul>
+  <ul class="nav1_ul3">
+    <li><a href="#"><i class="fa-brands fa-facebook"></i></a></li>
+    <li><a href="#"><i class="fa-brands fa-instagram"></i></a></li>
+    <li><a href="#"><i class="fa-brands fa-x"></i></a></li>
+  </ul>
+</nav>
+<style>
+  .nav1 ul,
+  .nav1 ul li,
+  .nav1 {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+  }
 
-    <ul class="nav1_ul3">
-      <li><a href="#"><i class="fa-brands fa-facebook"></i></a></li>
-      <li><a href="#"><i class="fa-brands fa-instagram"></i></a></li>
-      <li><a href="#"><i class="fa-brands fa-x"></i></a></li>
-    </ul>
-  </nav>
-  <style>
-    .nav1 ul,
-    .nav1 ul li,
-    .nav1 {
-      display: flex;
-      align-items: center;
-      flex-wrap: nowrap;
-    }
+  .nav1_ul3::before {
+    content: "|";
+    padding-right: 3px;
+  }
 
-    .nav1_ul3::before {
-      content: "|";
-      padding-right: 3px;
-    }
+  .nav1_ul2 li {
+    padding: 0 10px;
+  }
 
-    .nav1_ul2 li {
-      padding: 0 10px;
-    }
-
-    .nav1_ul3 li {
-      padding: 0 5px;
-      font-size: 11px;
-      /* font-size: 9px; */
-    }
-  </style>
-  <!-- nav 2 -->
-  <nav class="nav2 <%= activePage === 'home' ? '' : 'nav_box_shadow' %>">
-    <div class="nav20 flex align-center">
-      <div><a href="javascript:void(0)" class="threedot" id="threedot">&#9776;</a></div>
-      <!-- logo -->
-      <div class="logo"><a href="/">minto<span>Speed</span></a></div>
+  .nav1_ul3 li {
+    padding: 0 5px;
+    font-size: 11px;
+    /* font-size: 9px; */
+  }
+</style>
+<!-- nav 2 -->
+<nav class="nav2 <%= activePage === 'home' ? '' : 'nav_box_shadow' %>">
+  <div class="nav20 flex align-center">
+    <div><a href="javascript:void(0)" class="threedot" id="threedot">&#9776;</a></div>
+    <!-- logo -->
+    <div class="logo"><a href="/">minto<span>Speed</span></a></div>
 
 
-      <div class="navitem">
-        <ul>
-          <li><a class="<%= activePage === 'home' ? 'nav_page_active' : '' %>" href="/">Home</a></li>
-          <li><a href="javascript:void(0)">Categories&nbsp;&nbsp;&nbsp;<i class="fa-solid fa-caret-down"></i></a>
-            <ul class="category_nav_ul">
-              <li class="subul_head">Categories</li>
-              <li><a href="javascript:void(0)">Foods & Drinks</a></li>
-              <li><a href="javascript:void(0)">Grains & Pulses</a></li>
-            </ul>
-          </li>
-          <li><a href="/track" class="<%= activePage === 'track' ? 'nav_page_active' : '' %>">Track</a>
-          </li>
-          <li><a href="/orders" class="<%= activePage === 'orders' ? 'nav_page_active' : '' %>">Orders</a></li>
-          <li><a href="/complaint" class="<%= activePage === 'complaint' ? 'nav_page_active' : '' %>">Complaint</a></li>
+    <div class="navitem">
+      <ul>
+        <li><a class="<%= activePage === 'home' ? 'nav_page_active' : '' %>" href="/">Home</a></li>
+        <li><a href="javascript:void(0)">Categories&nbsp;&nbsp;&nbsp;<i class="fa-solid fa-caret-down"></i></a>
+          <ul class="category_nav_ul">
+            <li class="subul_head">Categories</li>
+            <li><a href="javascript:void(0)">Foods & Drinks</a></li>
+            <li><a href="javascript:void(0)">Grains & Pulses</a></li>
+          </ul>
+        </li>
+        <li><a href="/track" class="<%= activePage === 'track' ? 'nav_page_active' : '' %>">Track</a>
+        </li>
+        <li><a href="/orders" class="<%= activePage === 'orders' ? 'nav_page_active' : '' %>">Orders</a></li>
+        <li><a href="/complaint" class="<%= activePage === 'complaint' ? 'nav_page_active' : '' %>">Complaint</a></li>
 
-        </ul>
-      </div>
+      </ul>
     </div>
-    <!-- nav con -->
-    <div class="nav2_left flex align-center" style="flex-wrap: nowrap;">
-      <!-- cart -->
-      <div class="navopt" id="cart">
-        <a href="/cart" class="<%= activePage === 'cart' ? 'nav_page_active' : '' %>" title="Your selected items" style="display: flex; align-items: center; flex-wrap: nowrap;"><i
-            class="fa-solid fa-cart-shopping"></i>
-          <!-- <p class="cart_item_no"><%-totalCart%></p> -->
-          <p class="cart_item_no" style="margin: 0; margin-left: 2px;"><%-totalCart%></p>
-        </a>
-      </div>
-      <!-- pooja store -->
-      <div class="navopt">
-        <a href="/plants" title="View Pooja items" style="display: flex; align-items: center;">
-          <i class="fa-solid fa-fire-flame-simple"></i>          
-          <p class="sub_navopt pooja_store_sub_navopt">
-            Plant<br />Store</p>
-        </a>
-      </div>
+  </div>
+  <!-- nav con -->
+  <div class="nav2_left flex align-center" style="flex-wrap: nowrap;">
+    <!-- cart -->
+    <div class="navopt" id="cart">
+      <a href="/cart" class="<%= activePage === 'cart' ? 'nav_page_active' : '' %>" title="Your selected items"
+        style="display: flex; align-items: center; flex-wrap: nowrap;"><i class="fa-solid fa-cart-shopping"></i>
+        <!-- <p class="cart_item_no"><%-totalCart%></p> -->
+        <p class="cart_item_no" style="margin: 0; margin-left: 2px;"><%-totalCart%></p>
+      </a>
+    </div>
+    <!-- pooja store -->
+    <div class="navopt">
+      <a href="/plants" title="View Plant items" style="display: flex; align-items: center;">
+        <i class="fa-solid fa-fire-flame-simple"></i>
+        <p class="sub_navopt pooja_store_sub_navopt">
+          Plant<br />Store</p>
+      </a>
+    </div>
 
-      <!-- bulk order -->
+    <!-- bulk order
       <div class="navopt">
         <a href="/" title="Order in bulk" style="display: flex; align-items: center;">
           <i class="fa-solid fa-layer-group"></i>
           <p class="sub_navopt pooja_store_sub_navopt">
             Bulk<br />Order</p>
         </a>
-      </div>
+      </div> -->
 
-      <!-- signup -->
-      <div class="signup_btn <%= user === 'false' ? 'show' : 'hidden' %>">
-        <p>SignUp</p>
-        <p>& Login</p>
-      </div>
-      <!-- user btn -->
-      <div class="navopt <%= user === 'true' ? 'show' : 'hidden' %>" >
-                <a href="/profile" title="Profile">
-                  <i class="fa-solid fa-user <%= activePage === 'profile' ? 'nav_page_active' : '' %>"></i>
-                </a>
-            </div>
+    <!-- signup -->
+    <div id="authBtnNav" class="signup_btn <%= user === 'false' ? 'show' : 'hidden' %>">
+      <p>SignUp</p>
+      <p>& Login</p>
     </div>
+    <!-- user btn -->
+    <div class="navopt <%= user === 'true' ? 'show' : 'hidden' %>">
+      <a href="/profile" title="Profile">
+        <i class="fa-solid fa-user <%= activePage === 'profile' ? 'nav_page_active' : '' %>"></i>
+      </a>
+    </div>
+  </div>
 
-  </nav>
+</nav>
 
-  <style>
-    .hidden{
+<script nonce="<%-nonce%>">
+  const currentPageLink = window.location.href;
+  sessionStorage.setItem('redirect_link', currentPageLink);
+  document.getElementById('authBtnNav').addEventListener('click', () => {
+    window.location.href = '/auth/login';
+  });
+</script>
+
+<style>
+  .hidden {
+    display: none;
+  }
+
+  .show {
+    display: block;
+  }
+
+  .nav1 {
+    width: 100%;
+    height: 40px;
+    padding: 10px 20px 0 20px;
+    font-size: 11px;
+    font-weight: 500;
+    overflow: hidden;
+    justify-content: right;
+    /* background-color: #afbfc8; */
+  }
+
+  nav {
+    width: 100%;
+    z-index: 1000000;
+  }
+
+  .nav2 {
+    display: flex;
+    top: 40px;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    height: 65px;
+    padding: 0 20px;
+  }
+
+  .nav_box_shadow {
+    box-shadow: 0px 2px 3px rgba(100, 100, 100, 0.16);
+  }
+
+  div.logo {
+    margin-left: 25px;
+  }
+
+  div.logo>a {
+    color: #0bb744;
+    font-weight: 800;
+    font-size: 22px;
+  }
+
+  div.logo>a span {
+    color: rgb(19, 19, 19);
+  }
+
+  .navitem>ul {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+  }
+
+  .navitem>ul>li {
+    position: relative;
+  }
+
+  .navitem>ul>li>a,
+  .category_nav_ul>li>a {
+    color: black;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 17px;
+    line-height: 1;
+    margin: 0 2px;
+    font-family: 'Khula';
+  }
+
+  .category_nav_ul {
+    display: none;
+    position: absolute;
+    top: 30px;
+    width: 250px;
+    padding: 7px 0;
+    background-color: white;
+    box-shadow: 4px 4px 8px 2px rgba(57, 76, 96, .15);
+    border-radius: 7px;
+    z-index: 1000000;
+  }
+
+  .category_nav_ul>li {
+    padding: 3px 10px;
+  }
+
+  .navitem>ul>li:hover .category_nav_ul {
+    display: block;
+  }
+
+  .category_nav_ul>li :hover,
+  .navitem>ul>li>a:hover {
+    color: rgb(18, 186, 9);
+  }
+
+  .nav_page_active {
+    color: rgb(18, 186, 9) !important;
+  }
+
+  .subul_head {
+    font-size: 15px;
+    margin-left: 5px;
+    margin-bottom: 5px;
+    font-weight: 700;
+  }
+
+  #cart {
+    display: flex;
+    align-items: center;
+  }
+
+  #cart p {
+    padding-left: 4px;
+  }
+
+  .signup_btn,
+  .threedot,
+  .navopt {
+    cursor: pointer;
+    padding: 10px 14px;
+    margin: 1px;
+    font-weight: 600;
+    border-radius: 5px;
+  }
+
+
+  .navopt i {
+    font-size: 16px;
+    /* font-size: 14px; */
+  }
+
+
+  .threedot {
+    display: none;
+    color: black;
+    padding: 10px;
+  }
+
+  .navopt>a:hover,
+  .signup_btn:hover,
+  .threedot:hover,
+  .navopt:hover {
+    color: rgb(28, 177, 8);
+  }
+
+  .signup_btn>p:nth-child(1) {
+    font-size: 9px;
+    font-weight: 700;
+    margin: 0;
+    padding: 0;
+  }
+
+  .signup_btn>p:nth-child(2) {
+    font-size: 11px;
+    font-weight: 700;
+    margin: 0;
+    padding: 0;
+  }
+
+  .pooja_store_sub_navopt {
+    font-size: 11px;
+    /* font-size: 10px; */
+    font-weight: 600;
+    line-height: 1;
+    margin-left: 8px;
+  }
+
+
+  @media screen and (max-width: 1000px) {
+    .navitem>ul {
+      margin-left: 15px;
+    }
+
+    .navitem>ul>li>a {
+      padding: 10px 15px;
+    }
+
+    .navitem>ul>li:last-child {
       display: none;
     }
-    .show{
-      display: block;
-    }
-    .nav1 {
-      width: 100%;
-      height: 40px;
-      padding: 10px 20px 0 20px;
-      font-size: 11px;
-      font-weight: 500;
-      overflow: hidden;
-      justify-content: right;
-      /* background-color: #afbfc8; */
-    }
+  }
 
-    nav {
-      width: 100%;
-      z-index: 1000000;
-    }
-
-    .nav2 {
-      display: flex;
-      top: 40px;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: nowrap;
-      height: 65px;
-      padding: 0 20px;
-    }
-
-    .nav_box_shadow{
-      box-shadow: 0px 2px 3px rgba(100, 100, 100, 0.16);
+  @media screen and (max-width: 850px) {
+    .navitem {
+      display: none;
     }
 
     div.logo {
-      margin-left: 25px;
+      margin-left: 0;
     }
 
-    div.logo>a {
-      color: #0bb744;
-      font-weight: 800;
-      font-size: 22px;
-    }
-
-    div.logo>a span{
-      color: rgb(19, 19, 19);
-    }
-
-    .navitem>ul {
-      display: flex;
-      align-items: center;
-      margin-left: 20px;
-    }
-
-    .navitem>ul>li {
-      position: relative;
-    }
-
-    .navitem>ul>li>a,
-    .category_nav_ul>li>a {
-      color: black;
-      font-size: 15px;
-      font-weight: 600;
-      padding: 17px;
-      line-height: 1;
-      margin: 0 2px;
-      font-family: 'Khula';
-    }
-
-    .category_nav_ul {
-      display: none;
-      position: absolute;
-      top: 30px;
-      width: 250px;
-      padding: 7px 0;
-      background-color: white;
-      box-shadow: 4px 4px 8px 2px rgba(57, 76, 96, .15);
-      border-radius: 7px;
-      z-index: 1000000;
-    }
-
-    .category_nav_ul>li {
-      padding: 3px 10px;
-    }
-
-    .navitem>ul>li:hover .category_nav_ul {
+    .threedot {
       display: block;
     }
+  }
 
-    .category_nav_ul>li :hover,
-    .navitem>ul>li>a:hover {
-      color: rgb(18, 186, 9);
+
+  @media screen and (max-width: 750px) {
+
+    .nav1,
+    .nav2 {
+      padding-left: 4px !important;
+      padding-right: 4px !important;
+    }
+  }
+
+  @media screen and (max-width: 550px) {
+    .nav1_icon_head {
+      display: none;
     }
 
-    .nav_page_active{
-      color: rgb(18, 186, 9)!important;
+    .navopt i {
+      font-size: 14px;
     }
 
-    .subul_head {
-      font-size: 15px;
-      margin-left: 5px;
-      margin-bottom: 5px;
-      font-weight: 700;
-    }
-
-    #cart {
-      display: flex;
-      align-items: center;
-    }
-
-    #cart p {
-      padding-left: 4px;
+    .pooja_store_sub_navopt {
+      font-size: 10px;
+      margin-left: 6px;
     }
 
     .signup_btn,
     .threedot,
     .navopt {
-      cursor: pointer;
-      padding: 10px 14px;
-      margin: 1px;
-      font-weight: 600;
-      border-radius: 5px;
+      padding: 10px 9px;
     }
+  }
 
+  @media screen and (max-width: 430px) {
 
-    .navopt i{
-      font-size: 16px;
-      /* font-size: 14px; */
-    }
-
-
-    .threedot {
-      display: none;
-      color: black;
-      padding: 10px;
-    }
-
-    .navopt>a:hover,
-    .signup_btn:hover,
-    .threedot:hover,
-    .navopt:hover {
-      color: rgb(28, 177, 8);
-    }
-
-    .signup_btn>p:nth-child(1) {
+    .nav1,
+    .nav1_ul3 li {
       font-size: 9px;
-      font-weight: 700;
-      margin: 0;
-      padding: 0;
+    }
+
+    .signup_btn,
+    .threedot,
+    .navopt {
+      padding: 10px 6px;
+    }
+
+    .signup_btn>p:nth-child(1),
+    .pooja_store_sub_navopt {
+      font-size: 8px;
     }
 
     .signup_btn>p:nth-child(2) {
-      font-size: 11px;
-      font-weight: 700;
-      margin: 0;
-      padding: 0;
+      font-size: 10px;
     }
-
-    .pooja_store_sub_navopt{
-      font-size: 11px;
-      /* font-size: 10px; */
-      font-weight: 600; 
-      line-height: 1; 
-      margin-left: 8px;
-    }
-
-
-    @media screen and (max-width: 1000px) {
-      .navitem>ul {
-        margin-left: 15px;
-      }
-
-      .navitem>ul>li>a {
-        padding: 10px 15px;
-      }
-
-      .navitem>ul>li:last-child {
-        display: none;
-      }
-    }
-
-    @media screen and (max-width: 850px) {
-      .navitem {
-        display: none;
-      }
-
-      div.logo {
-        margin-left: 0;
-      }
-
-      .threedot {
-        display: block;
-      }
-    }
-
-
-    @media screen and (max-width: 750px) {
-
-      .nav1,
-      .nav2 {
-        padding-left: 4px !important;
-        padding-right: 4px !important;
-      }
-    }
-
-    @media screen and (max-width: 550px) {
-      .nav1_icon_head {
-        display: none;
-      }
-
-      .navopt i{
-        font-size: 14px;
-      }
-
-      .pooja_store_sub_navopt{
-        font-size: 10px;
-        margin-left: 6px;
-      }
-
-      .signup_btn,
-      .threedot,
-      .navopt {
-        padding: 10px 9px;
-      }
-    }
-
-    @media screen and (max-width: 430px) {
-
-      .nav1,
-      .nav1_ul3 li {
-        font-size: 9px;
-      }
-
-      .signup_btn,
-      .threedot,
-      .navopt {
-        padding: 10px 6px;
-      }
-
-      .signup_btn>p:nth-child(1), .pooja_store_sub_navopt {
-        font-size: 8px;
-      }
-
-      .signup_btn>p:nth-child(2) {
-        font-size: 10px;
-      }
-    }
-  </style>
+  }
+</style>

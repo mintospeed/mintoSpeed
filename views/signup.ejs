@@ -10,13 +10,13 @@
   <meta name="keywords" content="signup">
   <meta name="author" content="mintoSpeed">
 
-   <!-- fav icon -->
-   <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
-   <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
-   <link rel="shortcut icon" href="/favicon.ico" />
-   <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
-   <link rel="manifest" href="/favicon/site.webmanifest" />
- 
+  <!-- fav icon -->
+  <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+  <link rel="manifest" href="/favicon/site.webmanifest" />
+
   <!-- google font -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -41,10 +41,10 @@
   <%- include('partials/alertboxAndLoader') %>
 
     <section class="container">
-      <div class="container2">
-        <div class="logo"><a href="/">minto<span>Speed</span></a></div>
-        <header>Create Account</header>
 
+      <div class="container2">
+        <header>Create Account</header>
+        <div class="logo"><span style=" font-size: 13px;">on</span>&nbsp;<a href="/">minto<span>Speed</span></a></div>
 
         <!--  -->
         <div class="formDiv">
@@ -65,7 +65,7 @@
           <div class="column" style="flex-wrap: nowrap;">
             <div class="input-box">
               <label>Phone Number</label>
-              <input type="number" id="phone" placeholder="Enter phone number" required />
+              <input type="tel" id="phone" placeholder="Enter phone number" required />
             </div>
             <div style="margin-top: 15px;">
               <button id="sendOtpBtn" class="verifyOtpBtn">Send OTP</button>
@@ -75,7 +75,7 @@
           <div class="column" id="otpSection" style="flex-wrap: nowrap; display: none;">
             <div class="input-box">
               <label>Verify OTP </label>
-              <input type="text" id="phoneotp" placeholder="Enter OTP" required />
+              <input type="text" id="phoneOtp" placeholder="Enter OTP" required />
             </div>
             <div style=" margin-top: 15px;">
               <button id="verifyOtpBtn" class="verifyOtpBtn">Verify OTP</button>
@@ -141,90 +141,94 @@
         let user;
         let confirmationResult; // Store confirmationResult globally
 
+        let recaptchaInitialized = false; // Track initialization state globally
+
         function initializeRecaptcha() {
-          // Check if recaptchaVerifier already exists
-          if (window.recaptchaVerifier) {
-            try {
-              // Clear existing reCAPTCHA instance
-              window.recaptchaVerifier.clear();
-            } catch (error) {
-              showAlert("Something went wrong with recaptcha. Please refresh the page and try again.", "negative");
-              console.warn('Failed to clear existing RecaptchaVerifier:', error.message);
-              return;
-            }
+          // Check if recaptchaVerifier is already initialized
+          if (!recaptchaInitialized) {
+            window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+              size: 'invisible', // Use 'normal' for visible debugging
+              callback: (response) => {
+                console.log('Recaptcha solved:', response);
+              },
+              'expired-callback': () => {
+                console.warn('Recaptcha expired. Please refresh the page or try again.');
+              }
+            });
+
+            // Render the reCAPTCHA widget
+            window.recaptchaVerifier.render().then((widgetId) => {
+              console.log('Recaptcha widget ID:', widgetId);
+              recaptchaInitialized = true; // Mark initialization as complete
+            }).catch((error) => {
+              console.error('Error rendering Recaptcha:', error.message);
+              showAlert("Something went wrong with Recaptcha. Please refresh the page and try again.", "negative");
+            });
           }
-
-          // Initialize a new RecaptchaVerifier instance
-          window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-            size: 'invisible', // Use 'normal' for debugging
-            callback: (response) => console.log('Recaptcha solved:', response),
-            'expired-callback': () => {
-              console.warn('Recaptcha expired. Reinitializing...');
-              initializeRecaptcha();
-            }
-          });
-
-          // Render reCAPTCHA immediately
-          window.recaptchaVerifier.render().then((widgetId) => {
-            console.log('Recaptcha widget ID:', widgetId);
-          }).catch((error) => {
-            console.error('Error rendering Recaptcha:', error.message);
-            showAlert("Something went wrong with Recaptcha. Please refresh the page and try again.", "negative");
-            return;
-          });
         }
 
+
         ////
-        document.getElementById("sendOtpBtn").onclick = async () => {
+        document.getElementById("sendOtpBtn").onclick = async function () {
           // Disable the button
           this.disabled = true;
           document.getElementById("sendOtpBtn").classList.add("disabled");
           let phoneNumber = document.getElementById("phone").value.trim();
 
-          if (!phoneNumber.startsWith('+91')) {
-            phoneNumber = '+91' + phoneNumber;
+          const phoneRegex = /^(\+91)?[6-9]\d{9}$/;
+          if (!phoneRegex.test(phoneNumber)) {
+            showAlert("Phone number is incorrect!", "negative");
+            this.disabled = false;
+            document.getElementById("sendOtpBtn").classList.remove("disabled");
+            return;
           }
 
-
-          if (!phoneNumber.length > 10) {
-            showAlert("Phone nubmer is incorrect!", "negative");
-            document.getElementById("loader_container").style.display = "none";
-            this.disabled = false;
-            document.getElementById("sendOtpBtn").classList.add("enabled");
-            return;
+          if (!phoneNumber.startsWith('+91')) {
+            phoneNumber = '+91' + phoneNumber;
           }
 
           try {
             // Reinitialize RecaptchaVerifier to ensure a fresh token
             initializeRecaptcha();
-            const appVerifier = window.recaptchaVerifier;
+            let appVerifier = window.recaptchaVerifier;
 
             // Trigger phone number authentication
             const confirmationResult = await auth.signInWithPhoneNumber(phoneNumber, appVerifier);
             window.confirmationResult = confirmationResult;
+            console.log("Button disabled state:", this.disabled);
 
-            // showAlert("OTP sent to your phone number!");
-            document.getElementById("otpSection").style.display = "block";
+            showAlert("OTP sent to your number.", "positive");
+            document.getElementById("otpSection").style.display = "flex";
           } catch (error) {
             this.disabled = false;
-            document.getElementById("sendOtpBtn").classList.add("enabled");
+            document.getElementById("sendOtpBtn").classList.remove("disabled");
 
             console.error('Error sending code:', error.message);
-            showAlert("Error in sending OTP. Please try again.");
+            showAlert("Something went wrong. Please try again.");
           }
         };
 
-        document.getElementById("verifyOtpBtn").onclick = async () => {
+        document.getElementById("verifyOtpBtn").onclick = async function () {
           this.disabled = true;
           document.getElementById("verifyOtpBtn").classList.add("disabled");
           const otp = document.getElementById("phoneOtp").value.trim();
+          if (otp.length < 6) {
+            this.disabled = false;
+            document.getElementById("verifyOtpBtn").classList.remove("disabled");
+            showAlert("Invalid OTP. OTP should be 6 digit long.", "negative");
+            return;
+          }
           try {
             const result = await window.confirmationResult.confirm(otp);
             user = result.user;
+            console.log("user : " + user);
+            console.log("Button disabled state2:", this.disabled);
 
+            document.getElementById("verifyOtpBtn").textContent = "Verified";
+            document.getElementById("verifyOtpBtn").style.backgroundColor = "#001e00";
           } catch (error) {
             this.disabled = false;
-            document.getElementById("verifyOtpBtn").classList.add("enabled");
+            document.getElementById("verifyOtpBtn").classList.remove("disabled");
 
             console.error('Error verifying OTP:', error.message);
             // Check the error message or code to determine the specific issue
@@ -240,33 +244,18 @@
 
 
         // ////
-        document.getElementById("submitBtn").onclick = async () => {
-          if (!validateUserData()) {
-            return;
-          }
-          else {
-            if (user.length > 0 && user.uid) {
-              addUserData(user);
-            }
-          }
-
-        };
-
-        function validateUserData() {
+        document.getElementById("submitBtn").onclick = async function () {
           let isValid = true;
 
           const fullName = document.getElementById("fullName").value.trim();
           const email = document.getElementById("email").value.trim();
           const phone = document.getElementById("phone").value.trim();
-          const phoneOtp = document.getElementById("phoneOtp").value.trim();
           const password = document.getElementById("passwordInput").value;
           const streetAddress = document.getElementById("streetAddress").value.trim();
           const city = document.getElementById("city").value.trim();
           const pincode = document.getElementById("pincode").value.trim();
 
-
-
-          let validateInput = (input) => typeof input === 'string' && /^[a-zA-Z0-9_\- &,.]+$/.test(input);
+          let validateInput = (input) => typeof input === 'string' && /^[a-zA-Z0-9_\- &,.]+$/.test(input) && input.length > 3;
           let validateNumberInput = (input, length) => typeof input === 'string' && /^\d+$/.test(input) && input.length === length;
           let validateEmail = (input) => typeof input === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input);
 
@@ -275,98 +264,108 @@
           if (!validateInput(fullName)) {
             showAlert("Full Name is required", "negative");
             document.getElementById("loader_container").style.display = "none";
-            isValid = false;
+            return isValid = false;
           }
 
 
           // Email Validation
           if (!validateEmail(email)) {
             showAlert("Please enter a valid email address", "negative");
-            isValid = false;
             document.getElementById("loader_container").style.display = "none";
-
+            return isValid = false;
           }
 
-          if (password.trim() === "") {
-            showAlert("Password cannot be empty!", "negative");
+          if (password.trim() === "" || password.length < 6) {
+            showAlert("Password cannot be empty and should be of 6 digit long.", "negative");
             document.getElementById("loader_container").style.display = "none";
-            isValid = false;
+            return isValid = false;
           }
           // Address Validation
           if (!validateInput(streetAddress)) {
-            showAlert("Street address must be at least 5 characters", "negative");
-            isValid = false;
+            showAlert("Street address is required", "negative");
             document.getElementById("loader_container").style.display = "none";
+            return isValid = false;
           }
 
           if (!validateInput(city)) {
             showAlert("City is required", "negative");
-            isValid = false;
             document.getElementById("loader_container").style.display = "none";
+            return isValid = false;
           }
 
           // Pincode Validation (6 digits)
           if (!validateNumberInput(pincode, 6)) {
             showAlert("Please enter a valid 6-digit pincode", "negative");
-            isValid = false;
             document.getElementById("loader_container").style.display = "none";
+            return isValid = false;
           }
 
-          return isValid;
-        }
-
-        async function addUserData(user) {
           document.getElementById("loader_container").style.display = "flex";
 
-          if (validateUserData()) {
-            const fullName = document.getElementById("fullName").value.trim();
-            const email = document.getElementById("email").value.trim();
-            const phone = document.getElementById("phone").value.trim();
-            const password = document.getElementById("passwordInput").value;
-            const streetAddress = document.getElementById("streetAddress").value.trim();
-            const city = document.getElementById("city").value.trim();
-            const pincode = document.getElementById("pincode").value.trim();
+          if (isValid) {
+            console.log("user2 : " + user);
+            if (user.phoneNumber && user.uid) {
 
-            const hashedPassword = CryptoJS.SHA256(password).toString();
-            console.log("Hashed Password:", hashedPassword);
+              const hashedPassword = CryptoJS.SHA256(password).toString();
+              console.log("Hashed Password:", hashedPassword);
 
-            // Collect data from the formDiv
-            const formData = {
-              user, fullName, email, phone, streetAddress, city, pincode, hashedPassword
-            };
-            console.log("formData : " + formData);
+              // Collect data from the formDiv
+              const formData = {
+                user, fullName, email, streetAddress, city, pincode, hashedPassword
+              };
+              console.log("formData : " + formData);
 
 
-            // Send data to backend using fetch
-            try {
-              const response = await fetch('/auth/signup', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-              });
+              // Send data to backend using fetch
+              try {
+                const response = await fetch('/auth/signup', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify(formData)
+                });
 
-              const result = await response.json();
+                const result = await response.json();
 
-              if (result.type == "positive") {
-                showAlert('Account created successfully! Redirecting to profile page.', "positive");
-              } else if (result.type == "negative") {
-                showAlert("Something went wrong. Please refresh page and try again.", "negative");
+                if (result.type == "negative") {
+                  showAlert(result.message, "negative");
+                  document.getElementById("loader_container").style.display = "none";
+                }
+                else if (result.type == "positive") {
+                  const redirectLink = sessionStorage.getItem('redirect_link');
+                  if (redirectLink) {
+                    console.log("redirectLink: " + redirectLink);
+                    window.location.href = redirectLink; // Redirect to the saved link
+                  } else {
+                    window.location.href = '/profile';
+                  }
+                  return;
+                }
+              } catch (error) {
+                console.error('Error:', error);
                 document.getElementById("loader_container").style.display = "none";
+                showAlert('An error occurred. Please refresh page and try again.', "negative");
+                return;
               }
-            } catch (error) {
-              console.error('Error:', error);
+
+            }
+            else {
+              console.log("user : " + user);
+
               document.getElementById("loader_container").style.display = "none";
-              showAlert('An error occurred. Please try again.', "negative");
+              showAlert('Please verify phone number by clicking on send OTP button.', "negative");
+              return;
             }
           }
-        }
+          else {
+            document.getElementById("loader_container").style.display = "none";
+            showAlert('You entered an invalid input.', "negative");
+            return;
+          }
+        };
       });
     </script>
-
-
-
 
     <style>
       * {
@@ -374,23 +373,21 @@
         padding: 0;
         box-sizing: border-box;
         font-family: 'Open Sans', sans-serif;
+        -webkit-tap-highlight-color: transparent;
       }
 
       body {
         background-color: rgb(243, 243, 243);
       }
 
-      .disabled{
+      .disabled {
         opacity: 0.5;
         cursor: not-allowed;
       }
-      .enabled{
-        opacity: 1;
-        cursor: pointer;
-      }
+
 
       div.logo {
-        margin: 15px;
+        margin: 5px;
         text-align: center;
       }
 
@@ -398,7 +395,7 @@
         text-decoration: none;
         color: #0bb744;
         font-weight: 800;
-        font-size: 20px;
+        font-size: 15px;
       }
 
       div.logo>a span {
@@ -411,7 +408,6 @@
         height: 100vh;
         display: flex;
         justify-content: center;
-        align-items: center;
         overflow: auto;
       }
 
@@ -422,13 +418,14 @@
         background: #fff;
         padding: 20px;
         margin: 10px;
+        margin-bottom: 30px;
         border-radius: 8px;
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
       }
 
       .container2 header {
         font-size: 1.1rem;
-        color: #5a5a5a;
+        color: #424242;
         font-weight: 700;
         text-align: center;
         padding: 5px 10px 0 10px;
@@ -543,7 +540,7 @@
         }
 
         .container2 {
-          padding: 10px;
+          padding: 20px 15px;
         }
       }
     </style>

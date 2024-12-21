@@ -3,7 +3,7 @@ const router = express.Router();
 const { generateUniqueId } = require('../utilities/utility');
 const setCartCookie = require('../middlewares/cartCookie');
 
-router.get('/',setCartCookie, async (req, res) => {
+router.get('/', setCartCookie, async (req, res) => {
     const signedUser = req.cookies.userId ? 'true' : 'false';
 
     return res.render('feedback', { nonce: res.locals.nonce, activePage: 'feedback', user: signedUser });

@@ -1,23 +1,19 @@
 const express = require('express');
 const router = express.Router();
-const { getTotalCartItems } = require('../databaseQuery/getTotalCartNumber');
+const validateUser = require('../middlewares/validateUser');
 const { timestampIntoString } = require('../utilities/dateTime');
 
-const maxageTime = 12 * 60 * 60 * 1000; //12 hours
 const setCartCookie = require('../middlewares/cartCookie');
 
 
-router.get('/', setCartCookie, async (req, res) => {
-    let userId = req.cookies.userId;
-    let tempId = req.cookies.tempId;
+router.get('/', validateUser, setCartCookie, async (req, res) => {
+    let userId = req.userId;
     let totalCartItem = req.totalCart || 0;;
     const signedUser = req.cookies.userId ? 'true' : 'false';
     
 
     // If no user ID or temp ID, return empty cart
-    if (!userId && !tempId) {
-        return res.render('track', { nonce: res.locals.nonce, activePage: 'track', user: signedUser, totalCart: totalCartItem });
-    } else if (!userId && tempId) {
+    if (!userId) {
         return res.render('track', { nonce: res.locals.nonce, activePage: 'track', user: signedUser, totalCart: totalCartItem });
     }
 
@@ -26,9 +22,9 @@ router.get('/', setCartCookie, async (req, res) => {
 
 
 //return order data by orderid
-router.post('/submit', async (req, res) => {
+router.post('/submit', validateUser, async (req, res) => {
     let orderId  = req.body.orderId;
-    let userId = req.cookies.userId;
+    let userId = req.userId;
     const regex = /^[a-zA-Z0-9]+$/;     //allow only alphabets and numbers
     let tr;
 

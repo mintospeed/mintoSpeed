@@ -153,7 +153,7 @@
           if (inputElement == null) {
             return null;
           }
-          const input = inputElement.value;
+          const input = inputElement.value.trim();
           if (/[.#\[\]$<>\/]/.test(input) || input.length < 1) {
             showAlert("Blank or Input contains harmful characters like ., #, $, [, ], < or >. Please remove them.", "negative");
             inputElement.style.border = "1px solid red";
@@ -208,7 +208,7 @@
           // Ensure input is defined and has a value property
           if (input && input.value !== undefined) {
             console.log("er 13");
-            const value = input.value;
+            const value = input.value.trim();
             if (isNaN(value) || value < 1) {
               isError = true;
               input.style.border = "1px solid red";
@@ -251,7 +251,7 @@
           console.log("er 5");
           let weightInputs = document.getElementsByClassName("weightInput");
           let priceInputs = document.getElementsByClassName("priceInput");
-          const packedSelect = document.getElementById("packedSelect").value;
+          const packedSelect = document.getElementById("packedSelect").value.trim();
           const weightPriceOptions = document.getElementById("weightPriceOptions");
           weightPriceOptions.style.display = packedSelect === "false" ? "block" : "none";
 
@@ -475,7 +475,7 @@
         // Populate subcategories when category changes
         document.getElementById("categorySelect").addEventListener("change", function () {
           console.log("er 22");
-          const selectedCategory = this.value;
+          const selectedCategory = this.value.trim();
           if (selectedCategory !== "new") {
             populateSubcategories(selectedCategory);
           }
@@ -490,6 +490,7 @@
         padding: 0;
         box-sizing: border-box;
         font-family: 'Open Sans', sans-serif;
+        -webkit-tap-highlight-color: transparent;
       }
 
       body {

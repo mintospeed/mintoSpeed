@@ -1,34 +1,22 @@
 const express = require('express');
 const router = express.Router();
-const { getTotalCartItems } = require('../databaseQuery/getTotalCartNumber');
 const { timestampIntoString } = require('../utilities/dateTime');
-const { parse } = require('date-fns');
 const setCartCookie = require('../middlewares/cartCookie');
+const validateUser = require('../middlewares/validateUser');
 
-const maxageTime = 12 * 60 * 60 * 1000; //12 hours
 const limit = 3;
 
-router.get('/',setCartCookie, async (req, res) => {
-    let userId = req.cookies.userId;
-    let tempId = req.cookies.tempId;
+router.get('/', validateUser, setCartCookie, async (req, res) => {
+    let userId = req.userId;
     let totalCartItem = req.totalCart || 0;;
-    const signedUser = req.cookies.userId ? 'true' : 'false';
     let allOrders = [];
     let pendingOrders;
     let totalAllOrders = 0
     let totalPendingOrders = 0;
 
-
-    // If no user ID or temp ID, return empty cart
-    if (!userId && !tempId) {
-        return res.render('orders', { nonce: res.locals.nonce, activePage: 'orders', user: signedUser, totalCart: totalCartItem });
-    } else if (!userId && tempId) {
-        return res.render('orders', { nonce: res.locals.nonce, activePage: 'orders', user: signedUser, totalCart: totalCartItem });
-    }
-
     if (!userId) {
-        return res.render('orders', { nonce: res.locals.nonce, activePage: 'orders', user: signedUser, totalCart: totalCartItem });
-    }
+        return res.redirect('/auth/login');
+    } 
 
     //pending and all order detail
     try {
@@ -103,17 +91,14 @@ router.get('/',setCartCookie, async (req, res) => {
 });
 
 // Route to fetch orders by page (AJAX)
-router.post('/fetch-orders', async (req, res) => {
+router.post('/fetch-orders', validateUser, async (req, res) => {
     try {
-        let userId = req.cookies.userId;
-        let tempId = req.cookies.tempId;
+        let userId = req.userId;
         const { page, type } = req.body;
         const ordersCollection = req.firestore.collection('orderByUserId').doc(userId).collection('orders');
         const offset = (page - 1) * limit;
 
-        if (!userId && !tempId) {
-            return res.json({ success: false });
-        } else if (!userId && tempId) {
+        if (!userId) {
             return res.json({ success: false });
         }
 
@@ -144,8 +129,6 @@ router.post('/fetch-orders', async (req, res) => {
         return res.status(500).json({ success: false, message: 'Error fetching orders' });
     }
 });
-
-
 
 
 module.exports = router;

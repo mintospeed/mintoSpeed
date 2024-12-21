@@ -35,6 +35,7 @@ module.exports = async (req, res, next) => {
         res.cookie('totalCart', totalCartItem, {
             maxAge: maxageTime,
             httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',  // Sends the cookie only over HTTPS in production
             sameSite: 'Strict',
         });
 
@@ -48,6 +49,7 @@ module.exports = async (req, res, next) => {
         res.cookie('totalCart', 0, {
             maxAge: maxageTime,
             httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',  // Sends the cookie only over HTTPS in production
             sameSite: 'Strict',
         });
     }

@@ -151,7 +151,7 @@
           if (inputElement == null) {
             return null;
           }
-          const input = inputElement.value;
+          const input = inputElement.value.trim();
           if (/[.#\[\]$<>\/]/.test(input) || input.length < 1) {
             showAlert("Blank or Input contains harmful characters like ., #, $, [, ], < or >. Please remove them.", "negative");
             inputElement.style.border = "1px solid red";
@@ -202,9 +202,9 @@
         function validatePrice(input) {
           console.log("er 13.0");
           // Ensure input is defined and has a value property
-          if (input && input.value !== undefined) {
+          if (input && input.value.trim() !== undefined) {
             console.log("er 13");
-            const value = input.value;
+            const value = input.value.trim();
             if (isNaN(value) || value < 1) {
               isError = true;
               input.style.border = "1px solid red";
@@ -229,7 +229,7 @@
           console.log("er 5");
           let weightInputs = document.getElementsByClassName("weightInput");
           let priceInputs = document.getElementsByClassName("priceInput");
-          const packedSelect = document.getElementById("packedSelect").value;
+          const packedSelect = document.getElementById("packedSelect").value.trim();
           const weightPriceOptions = document.getElementById("weightPriceOptions");
           weightPriceOptions.style.display = packedSelect === "false" ? "block" : "none";
 
@@ -446,7 +446,7 @@
         // Populate subcategories when category changes
         document.getElementById("categorySelect").addEventListener("change", function () {
           console.log("er 22");
-          const selectedCategory = this.value;
+          const selectedCategory = this.value.trim();
           if (selectedCategory !== "new") {
             populateSubcategories(selectedCategory);
           }
@@ -455,8 +455,8 @@
         // Populate items when subcategory changes
         document.getElementById("subcategorySelect").addEventListener("change", function () {
           console.log("er 25.3");
-          const selectedCategory = document.getElementById("categorySelect").value;
-          const selectedSubCategory = this.value;
+          const selectedCategory = document.getElementById("categorySelect").value.trim();
+          const selectedSubCategory = this.value.trim();
           populateItem(selectedCategory, selectedSubCategory);
         });
 
@@ -464,9 +464,9 @@
         //load item data
         document.getElementById("itemSelect").addEventListener("change", function () {
           console.log("er 25.3");
-          const selectedCategory = document.getElementById("categorySelect").value;
-          const selectedSubCategory = document.getElementById("subcategorySelect").value;
-          const selectedItem = this.value;
+          const selectedCategory = document.getElementById("categorySelect").value.trim();
+          const selectedSubCategory = document.getElementById("subcategorySelect").value.trim();
+          const selectedItem = this.value.trim();
           loadItem(selectedCategory, selectedSubCategory, selectedItem);
         });
 

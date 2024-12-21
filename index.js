@@ -11,7 +11,6 @@ const { v4: uuidv4 } = require('uuid'); // Unique user IDs
 const admin = require('firebase-admin');
 
 
-
 // Initialize Firebase Admin SDK only once
     admin.initializeApp({
         credential: admin.credential.cert({
@@ -25,8 +24,6 @@ const admin = require('firebase-admin');
 
 const database = admin.database(); // Initialize the Realtime Database
 const firestore = admin.firestore(); // Initialize Firestore
-const auth = admin.auth(); 
-
 
 // Firebase injection middleware
 app.use((req, res, next) => {
@@ -66,7 +63,7 @@ app.use((req, res, next) => {
 // Rate limiting
 const limiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 1 hour
-    max: 100, // Limit each IP to 100 requests per windowMs
+    max: 1000, // Limit each IP to 100 requests per windowMs
     message: 'Too many requests, please try again later.'
 });
 app.use(limiter);
@@ -79,7 +76,7 @@ app.use((req, res, next) => {
 });
 
 // Import route modules
-const authRoutes = require('./routes/signup');
+const authRoutes = require('./routes/auth');
 const indexRoutes = require('./routes/index');
 const itemsRoutes = require('./routes/items');
 const cartRoutes = require('./routes/cart');

@@ -4,8 +4,9 @@ const dayjs = require('dayjs');
 const customParseFormat = require('dayjs/plugin/customParseFormat');
 dayjs.extend(customParseFormat);
 const { generateUniqueId, getClosestWeightAndPrice } = require('../utilities/utility');
-const twoMonthsAgo = new Date();
+let twoMonthsAgo = new Date();
 twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2); // Go back 2 months
+const validateUser = require('../middlewares/validateUser');
 
 
 router.get('/', async (req, res) => {
@@ -75,24 +76,18 @@ router.get('/', async (req, res) => {
         .catch((error) => {
             console.error("Error processing cart items:", error);
         });
-
-
 });
 
 
 //proceed and update cart
-router.post('/proceed-cart-items', async (req, res) => {
+router.post('/proceed-cart-items', validateUser, async (req, res) => {
     try {
         const { items, selectedCartItemIds } = req.body; // Capture selectedCartItemIds from request body
-        let userId = req.cookies.userId;
-        let tempId = req.cookies.tempId;
+        let userId = req.userId;
 
-        if (!userId && !tempId) {
-            return res.json({ success: "negative", message: 'No user ID or temp ID found.' });
-        }
-        if (!userId && tempId) {
-            userId = tempId;
-        }
+        if (!userId) {
+            return res.redirect('/auth/login');
+        }   
 
         const firestore = req.firestore;
         let updatedItemIds = [];

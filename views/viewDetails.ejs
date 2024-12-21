@@ -32,8 +32,9 @@
             box-sizing: border-box;
             scroll-behavior: smooth;
             font-family: 'Open Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
-
+       
         body {
             position: relative;
             padding: 0;
@@ -296,7 +297,10 @@
 
 
 
-
+<script nonce="<%-nonce%>">
+  const currentPageLink = window.location.href;
+  sessionStorage.setItem('redirect_link', currentPageLink);
+</script>
 
 </body>
 

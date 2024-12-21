@@ -2,31 +2,28 @@ const express = require('express');
 const router = express.Router();
 const orderFormSubmitUser = require('../controllers/orderFormSubmitUser');
 const orderFormSubmitAgent = require('../controllers/orderFormSubmitAgent');
+const validateUser = require('../middlewares/validateUser');
 
 const { generateUniqueId, getClosestWeightAndPrice } = require('../utilities/utility');
-const { dateTimeForRealTimeDatabase } = require('../utilities/dateTime');
-const maxageTime = 12 * 60 * 60 * 1000; //12 hours
-const { getTotalCartItems } = require('../databaseQuery/getTotalCartNumber');
-const maxageTimeForUserId = 6 * 30 * 24 * 60 * 60 * 1000; // 6 months
 
 
 // Serve the main page (index.ejs)
-router.get('/', async (req, res) => {
+router.get('/', validateUser, async (req, res) => {
     const orderId = req.query.tempOrderId;
     console.log("order id : " + orderId);
 
-    let userId = req.cookies.userId;
-    let tempId = req.cookies.tempId;
+    let userId = req.userId;
     let userData = {};
-if (!userId && tempId) {
-        userId = tempId;
+
+    if (!userId) {
+        return res.redirect('/auth/login');
     }
 
-    const signedUser = req.cookies.userId ? 'true' : 'false';
+    const signedUser = req.userId ? 'true' : 'false';
 
 
     let validateInput = (input) => typeof input === 'string' && /^[a-zA-Z0-9_\- &,.]+$/.test(input);
-    if(!validateInput(orderId)){
+    if (!validateInput(orderId)) {
         return res.render('orderForm', { nonce: res.locals.nonce, activePage: 'orderForm', user: signedUser });
     }
 
@@ -63,32 +60,17 @@ if (!userId && tempId) {
 
 
 //store order data into database
-router.post('/order', async (req, res) => {
-    let userId = req.cookies.userId;
-    let tempId = req.cookies.tempId;
-    let userData = {};
+router.post('/order', validateUser, async (req, res) => {
+    let userId = req.userId;
     let errorForAdmin = [];
     let logsForAdmin = [];
-
-    let tempUser;
-    let signedUser = 'false';
-
-    if (userId) {
-        signedUser = 'true';
+    let { fullName, email,  phone, streetAddress, city, pincode, orderId, paymentMode } = req.body;
+  
+    if (!userId) {
+        return res.redirect('/auth/login');
     }
-
-    if (!userId && !tempId) {
-        totalCartItem = 0
-    }
-    else if (!userId && tempId) {
-        userId = tempId;
-        tempUser = true;
-    }
-
 
     try {
-        const { fullName, email,  phone, streetAddress, city, pincode, orderId, paymentMode } = req.body;
-
         let validateInput = (input) => typeof input === 'string' && /^[a-zA-Z0-9_\- &,.]+$/.test(input);
         let validateNumberInput = (input, length) => typeof input === 'string' && /^\d+$/.test(input) && input.length === length;
         let validateEmail = (input) => typeof input === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input);
@@ -96,13 +78,15 @@ router.post('/order', async (req, res) => {
             return typeof input === 'string' && ['online', 'cod'].includes(input.toLowerCase());
         };
 
+        const phoneRegex = /^(\+91)?[6-9]\d{9}$/;
+          if (!phoneRegex.test(phone)) {
+            return res.json({ type: 'negative', message: 'Invalid phone number.' });
+          }
+
         // Validating each field
         if (
             !validateInput(fullName) ||
             !validateEmail(email) ||
-            // !validateNumberInput(emailOtp, 6) ||
-            !validateNumberInput(phone, 10) ||
-            // !validateNumberInput(phoneOtp, 6) ||
             !validateInput(streetAddress) ||
             !validateInput(city) ||
             !validateInput(orderId) ||
@@ -117,27 +101,13 @@ router.post('/order', async (req, res) => {
         let userFormData = { fullName, email, phone, streetAddress, city, pincode, dateTime: new Date() };
         console.log("oderform userFormData");
         console.log(userFormData);
-        
+
         // Reference to the user in Firestore
         const userRef = req.firestore.collection('users').doc(userId);
         const userSnapshot = await userRef.get();
 
-        //if user is not found in users collection then create one
         if (!userSnapshot.exists) {
-            console.log('User not found.');
-            const userRef = req.firestore.collection('users').doc(userId);
-            try {
-                await userRef.set(userFormData);
-                logsForAdmin.push("New User.");
-            } catch (error) {
-                console.error('User not added to database:', error);
-                errorForAdmin.push("New User data not added in firestore users collection.");
-                return res.json({ message: 'User not added to database. Please try again.', type: 'negative' });
-            }
-            tempUser = true;
-        }
-        else {
-            tempUser = false;
+            return res.redirect('/auth/login');   
         }
 
         const tempOrderRef = req.database.ref(`tempOrder/${orderId}`);
@@ -215,7 +185,7 @@ router.post('/order', async (req, res) => {
         //add pendingorder data in firestore pendingorder
         const pendingOrderRef = req.firestore.collection('pendingOrders').doc(orderId);
         try {
-            await pendingOrderRef.set({dateTime: currentDateTime});
+            await pendingOrderRef.set({ dateTime: currentDateTime });
         } catch (error) {
             errorForAdmin.push("pendingOrders not added in firestore.");
             console.error('Error to add pendingOrders to firestore :', error); // Log the error for debugging
@@ -223,10 +193,10 @@ router.post('/order', async (req, res) => {
 
         //add orderByUserId data in firestore orderByUserId
         const orderInfo = {
-                totalPrice: totalPrice,
-                totalItems: totalItems,
-                status: "pending",
-                orderTime: currentDateTime,
+            totalPrice: totalPrice,
+            totalItems: totalItems,
+            status: "pending",
+            orderTime: currentDateTime,
         };
 
         const orderByUserIdrRef = req.firestore.collection('orderByUserId').doc(userId).collection('orders').doc(orderId);
@@ -241,10 +211,10 @@ router.post('/order', async (req, res) => {
         //delete tempOrder in firebase 
         try {
             await tempOrderRef.remove();
-          } catch (error) {
+        } catch (error) {
             errorForAdmin.push("Cannot delete tempOrder data");
             console.error("Error deleting tempOrder data:", error);
-          }
+        }
 
         //delete order items from cart
         let totalDeleteItems = 0;
@@ -261,21 +231,6 @@ router.post('/order', async (req, res) => {
                 errorForAdmin.push("Cannot delete cart data");
                 console.error('Error to delete order to database :', error); // Log the error for debugging
             }
-        }
-
-         //add userid cookie by tempId cookie
-         try {
-            if (!tempUser) {
-                res.cookie('userId', userId, {
-                    maxAge: maxageTimeForUserId,
-                    httpOnly: true,
-                    // secure: process.env.NODE_ENV === 'production',  // Sends the cookie only over HTTPS in production
-                    sameSite: 'Strict'
-                });
-            }
-        } catch (error) {
-            console.error("Error adding userId in client browser:", error);
-            errorForAdmin.push("Error adding userId in client browser.");
         }
 
 

@@ -1,137 +1,37 @@
-<!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Firebase Phone Authentication</title>
-
-  <!-- Firebase JS SDK -->
-  <script nonce="<%-nonce%>" src="https://www.gstatic.com/firebasejs/9.12.1/firebase-app-compat.js"></script>
-  <script nonce="<%-nonce%>" src="https://www.gstatic.com/firebasejs/9.12.1/firebase-auth-compat.js"></script>
-
-  <style>
-    #otpSection {
-      display: none;
-    }
-
-    #userDetails {
-      display: none;
-    }
-  </style>
+  <title>Document</title>
 </head>
-
 <body>
-  <h1>Phone Authentication with Firebase</h1>
+  <form id="phoneForm">
+    <label for="phone">Phone Number:</label>
+    <input type="tel" id="phone" name="phone" placeholder="123-456-7890" required>
+    <small id="error" style="color: red; display: none;">Invalid phone number format.</small>
+    <button type="submit">Submit</button>
+</form>
 
-  <!-- Phone number input -->
-  <label for="phoneNumber">Phone Number:</label>
-  <input type="text" id="phoneNumber" placeholder="+1XXXXXXXXXX">
-  <div id="recaptcha-container"></div>
-  <button id="sendCodeButton">Send Verification Code</button>
+<script>
+    const form = document.getElementById('phoneForm');
+    const phoneInput = document.getElementById('phone');
+    const error = document.getElementById('error');
 
-  <div id="otpSection">
-    <!-- OTP input -->
-    <label for="otp">Enter OTP:</label>
-    <input type="text" id="otp" placeholder="Enter OTP">
-    <button id="verifyOtpButton">Verify OTP</button>
-  </div>
+    form.addEventListener('submit', (e) => {
+        e.preventDefault(); // Prevent form submission
 
-  <div id="userDetails">
-    <h3>Authenticated User:</h3>
-    <pre id="userInfo"></pre>
-  </div>
-
-  <script nonce="<%-nonce%>">
-    const firebaseConfig = {
-      apiKey: "AIzaSyDFgvcbxCbPKwSxkzdIBYe0CJGCeqhQO2Q",
-      authDomain: "mintospeed-web.firebaseapp.com",
-      projectId: "mintospeed-web",
-      messagingSenderId: "494958498311",
-      appId: "1:494958498311:web:da56215a676c72ec7390a2",
-      measurementId: "G-G0671NCF1W"
-
-    };
-
-    // Initialize Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-
-    let confirmationResult; // Store confirmationResult globally
-
-    function initializeRecaptcha() {
-  // Check if recaptchaVerifier already exists
-  if (window.recaptchaVerifier) {
-    try {
-      // Clear existing reCAPTCHA instance
-      window.recaptchaVerifier.clear();
-    } catch (error) {
-      console.warn('Failed to clear existing RecaptchaVerifier:', error.message);
-    }
-  }
-
-  // Initialize a new RecaptchaVerifier instance
-  window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-    size: 'invisible', // Use 'normal' for debugging
-    callback: (response) => console.log('Recaptcha solved:', response),
-    'expired-callback': () => {
-      console.warn('Recaptcha expired. Reinitializing...');
-      initializeRecaptcha();
-    }
-  });
-
-  // Render reCAPTCHA immediately
-  window.recaptchaVerifier.render().then((widgetId) => {
-    console.log('Recaptcha widget ID:', widgetId);
-  }).catch((error) => {
-    console.error('Error rendering Recaptcha:', error.message);
-  });
+        const phoneNumber = phoneInput.value;
+        const phoneRegex = /^(\+91)?[6-9]\d{9}$/;
+if (phoneRegex.test(phoneNumber)) {
+    error.style.display = 'none';
+    alert('Phone number is valid!');
+    // Form submission logic or further actions here
+} else {
+    error.style.display = 'block';
+    error.textContent = 'Invalid phone number. Use +91xxxxxxxxxx or xxxxxxxxxx.';
 }
-
-document.getElementById("sendCodeButton").onclick = async () => {
-  const phoneNumber = document.getElementById("phoneNumber").value.trim();
-
-  if (!phoneNumber.startsWith("+")) {
-    alert("Enter phone number in E.164 format (e.g., +1234567890).");
-    return;
-  }
-
-  try {
-    // Reinitialize RecaptchaVerifier to ensure a fresh token
-    initializeRecaptcha();
-    const appVerifier = window.recaptchaVerifier;
-
-    // Trigger phone number authentication
-    const confirmationResult = await auth.signInWithPhoneNumber(phoneNumber, appVerifier);
-    window.confirmationResult = confirmationResult;
-
-    alert("Verification code sent!");
-    document.getElementById("otpSection").style.display = "block";
-  } catch (error) {
-    console.error('Error sending code:', error.message);
-    alert("Error sending verification code. Please try again.");
-  }
-};
-
-
-
-  document.getElementById("verifyOtpButton").onclick = async () => {
-    const otp = document.getElementById("otp").value.trim();
-
-    try {
-      const result = await window.confirmationResult.confirm(otp);
-      const user = result.user;
-
-      alert("Phone number verified!");
-      document.getElementById("userDetails").style.display = "block";
-      document.getElementById("userInfo").textContent = JSON.stringify(user, null, 2);
-    } catch (error) {
-      console.error('Error verifying OTP:', error.message);
-      alert("Failed to verify OTP. Please try again.");
-    }
-  };
-
+    });
 </script>
-</body>
 
+</body>
 </html>

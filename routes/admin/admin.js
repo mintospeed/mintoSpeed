@@ -13,8 +13,8 @@ return res.render('admin/adminLogin', { nonce: res.locals.nonce, activePage: 'ad
 // Admin login route
 router.post('/login', (req, res) => {
     const adminCredentials = {
-        username: 'ritik@admin',
-        password: 'hp9897',
+        username: process.env.ADMIN_ID,
+        password: process.env.ADMIN_PASSWORD,
     };
 
     const { username, password } = req.body;
@@ -25,14 +25,11 @@ router.post('/login', (req, res) => {
         res.cookie('authToken', token, {
             maxAge: 24 * 60 * 60 * 1000, // 1 day
             httpOnly: true,
-            // secure: process.env.NODE_ENV === 'production',  // Uncomment if needed
+            secure: process.env.NODE_ENV === 'production',  // Uncomment if needed
             sameSite: 'Strict'
         });
-
         return res.json({ type: 'positive', message: 'Login successful.' });
-        
     }
-
     return res.json({ type: 'negative', message: 'Invalid input' });
 });
 

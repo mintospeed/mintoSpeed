@@ -1,28 +1,24 @@
 const express = require('express');
 const router = express.Router();
-const { getTotalCartItems } = require('../databaseQuery/getTotalCartNumber');
 const { timestampIntoString } = require('../utilities/dateTime');
 const { parse } = require('date-fns');
 
 const setCartCookie = require('../middlewares/cartCookie');
-const maxageTime = 12 * 60 * 60 * 1000; //12 hours
+const validateUser = require('../middlewares/validateUser');
 
 
-router.get('/',setCartCookie, async (req, res) => {
-    let userId = req.cookies.userId;
-    let tempId = req.cookies.tempId;
+
+router.get('/', validateUser, setCartCookie, async (req, res) => {
+    let userId = req.userId;
     let totalCartItem = req.totalCart || 0;;
     let userData = {};
     let pendingOrders = [];
-    let lastVisible = null; // Initialize a variable to store the last document
 
 
     // If no user ID or temp ID, return empty cart
-    if (!userId && !tempId) {
-        return res.status(404).json({ error: 'No user found' });
-    } else if (!userId && tempId) {
-        return res.status(404).json({ error: 'No user found' });
-    }
+    if (!userId) {
+        return res.redirect('/auth/login');
+    } 
 
     //user detail
     try {
@@ -64,17 +60,12 @@ router.get('/',setCartCookie, async (req, res) => {
                         totalItems: doc.data().totalItems,
                         totalPrice: doc.data().totalPrice
                     });
-                   
                 });
-
-
             } catch (error) {
                 console.error("Error fetching pendign orders:", error);
             }
-        
             console.log("Pending orders (newest first):", pendingOrders);
             return res.render('profile', { nonce: res.locals.nonce, activePage: 'profile', user: "true", userData: userData, totalCart: totalCartItem, pendingOrders: pendingOrders });
-
     } catch (error) {
         console.error("Error retrieving orders:", error);
         return res.render('profile', { nonce: res.locals.nonce, activePage: 'profile', user: "true", userData: userData, totalCart: totalCartItem });

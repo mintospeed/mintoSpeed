@@ -31,12 +31,12 @@
     <script nonce="<%-nonce%>" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 
     <style>
-        * {
+         * {
             box-sizing: border-box;
             scroll-behavior: smooth;
             font-family: 'Open Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
-
         body {
             position: relative;
             padding: 0;
@@ -105,20 +105,20 @@
             <section class="pf_con">
                 <div class="pf1">
                     <h2 class="pf_name">
-                        <%=userData.name%>
+                        <%=userData.fullName%>
                     </h2>
                     <p class="pf_email">
                         <%=userData.email%>
                     </p>
                     <p>
-                        <%=userData.mob%>
+                        <%=userData.phone%>
                     </p>
 
                     <p>
-                        <%=userData.streetAddress%>&nbsp;, <%=userData.pincode%>
+                        <%=userData.streetAddress%>,&nbsp;<%=userData.city%>,&nbsp;<%=userData.pincode%>
                     </p>
 
-                    <div class="lgbtn" id="lgbtn1" onclick="logout()">Logout</div>
+                    <div class="lgbtn" id="lgbtn1">Logout</div>
                 </div>
 
                 <div class="pf11">
@@ -187,7 +187,7 @@
                     </div>
                 </div>
                 
-                <div class="pf3 lgbtn" onclick="logout()">Logout</div>
+                <div class="pf3 lgbtn">Logout</div>
             </section>
 
 
@@ -210,7 +210,31 @@
                         window.location.href = '/feedback';
                     });
 
+                    $('.lgbtn').click(async function () {
+                        document.getElementById("loader_container").style.display = "flex";
 
+                    try {
+                      const response = await fetch('/auth/logout', {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json'
+                        },
+                      });
+                  
+                      const result = await response.json();
+                  
+                      if (result.type == "positive") {
+                        window.location.href = '/auth/login';
+                      } else if (result.type == "negative") {
+                        showAlert("Something went wrong. Please try again.", "negative");
+                        document.getElementById("loader_container").style.display = "none";
+                      }
+                    } catch (error) {
+                      console.error('Error:', error);
+                      document.getElementById("loader_container").style.display = "none";
+                      showAlert('Something went wrong. Please try again.', "negative");
+                    }
+                    });
                 });
             </script>
 
@@ -351,7 +375,7 @@
                     display: block;
                     padding: 45px 60px;
                     height: 300px;
-                    background-image: linear-gradient(117deg, rgb(167, 241, 146) 39.2%, rgb(227, 251, 222) 156.2%);
+                    background-image: linear-gradient(117deg, rgb(141, 220, 119) 39.2%, rgb(209, 245, 202) 156.2%);
                 }
 
                 .lgbtn {
@@ -376,6 +400,7 @@
 
                 .pf1>p {
                     margin: 8px 0;
+                    font-size: 14px;
                 }
 
                 div.pf11 {
@@ -486,6 +511,9 @@
                 @media screen and (max-width: 550px) {
                     .pf_name {
                         font-size: 21px;
+                    }
+                    div.pf1 p{
+                        font-size: 13px;
                     }
 
                     div.info_con {

@@ -1,14 +1,13 @@
 const express = require('express');
 const { timestampIntoString } = require('../utilities/dateTime');
+const validateUser = require('../middlewares/validateUser');
 
 
 const router = express.Router();
 
 // Admin dashboard (protected route)
-router.get('/', async (req, res) => {
+router.get('/', validateUser, async (req, res) => {
     const detailedOrders = [];
-    let userId = req.cookies.userId;
-    let tempId = req.cookies.tempId;
     const orderId = req.query.orderId;
 
     let validateInput = (input) => typeof input === 'string' && /^[a-zA-Z0-9_\- &,.]+$/.test(input);
@@ -18,20 +17,6 @@ router.get('/', async (req, res) => {
             activePage: 'detail order',
         });
     }
-
-    // If no user ID or temp ID, return empty cart
-    if (!userId && !tempId) {
-        return res.render('viewDetails', {
-            nonce: res.locals.nonce,
-            activePage: 'detail order',
-        });    
-    } else if (!userId && tempId) {
-        return res.render('viewDetails', {
-            nonce: res.locals.nonce,
-            activePage: 'detail order',
-        });    
-    }
-
 
     try {
         const orderDoc = await req.firestore.collection("order").doc(orderId).get();

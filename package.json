@@ -1,17 +1,23 @@
 {
   "name": "mintospeed",
   "version": "1.0.0",
-  "description": "",
+  "description": "Fast delivery website",
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "delivery",
+    "grocery",
+    "shopping"
+  ],
+  "author": "mintospeed",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/recaptcha-enterprise": "^5.13.0",
     "axios": "^1.7.9",
+    "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",

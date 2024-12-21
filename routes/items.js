@@ -33,9 +33,7 @@ router.get('/', setCartCookie, async (req, res) => {
     if (!userId && !tempId) {
         totalCartItem = 0
     }
-    else if (!userId && tempId) {
-        userId = tempId;
-    }
+    
 
      //get category names
      try {        
