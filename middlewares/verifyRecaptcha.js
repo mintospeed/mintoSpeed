@@ -1,5 +1,7 @@
 const { RecaptchaEnterpriseServiceClient } = require('@google-cloud/recaptcha-enterprise');
 
+const serviceAccount = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
+
 module.exports = async (req, res, next) => {
     const token = req.body.token;
     if(!token){
@@ -7,8 +9,8 @@ module.exports = async (req, res, next) => {
     }
 
     const params = {
-        projectID: 'mintospeed',        
-        recaptchaKey: '6Lfh15gqAAAAACwNWDMLGYgAsq38Wtof-CJPyxAA', 
+        projectID: serviceAccount.project_id,        
+        recaptchaKey: process.env.RECAPTCHA_SITE_KEY, 
         token: token,      // Replace with the token generated from reCAPTCHA verification
         recaptchaAction: 'LOGIN' // Replace with the action name (e.g., 'login' or 'signup')
       };
@@ -22,7 +24,14 @@ module.exports = async (req, res, next) => {
         recaptchaAction ,
     }) {
 
-        const client = new RecaptchaEnterpriseServiceClient();
+        const client = new RecaptchaEnterpriseServiceClient({
+            credentials: {
+                client_email: serviceAccount.client_email,
+                private_key: serviceAccount.private_key,
+            },
+            projectId: serviceAccount.project_id,
+        });        
+        
         const projectPath = client.projectPath(projectID);
 
         // Build the assessment request.
