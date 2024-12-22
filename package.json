@@ -15,7 +15,6 @@
   "author": "mintospeed",
   "license": "ISC",
   "dependencies": {
-    "@google-cloud/recaptcha-enterprise": "^5.13.0",
     "axios": "^1.7.9",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",

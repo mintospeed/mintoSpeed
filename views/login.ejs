@@ -35,7 +35,7 @@
   <script nonce="<%-nonce%>" src="https://www.gstatic.com/firebasejs/9.12.1/firebase-auth-compat.js"></script>
 
   <script nonce="<%-nonce%>"
-    src="https://www.google.com/recaptcha/enterprise.js?render=6Lfh15gqAAAAACwNWDMLGYgAsq38Wtof-CJPyxAA"></script>
+    src="https://www.google.com/recaptcha/enterprise.js?render=6LfpL6MqAAAAADXXbESyGRXDNwTJdsZCuqO3ffIr"></script>
 
 </head>
 
@@ -116,7 +116,7 @@
           try {
             // recaptcha
             grecaptcha.enterprise.ready(async () => {
-              const token = await grecaptcha.enterprise.execute('6Lfh15gqAAAAACwNWDMLGYgAsq38Wtof-CJPyxAA', { action: 'LOGIN' });
+              const token = await grecaptcha.enterprise.execute('6LfpL6MqAAAAADXXbESyGRXDNwTJdsZCuqO3ffIr', { action: 'LOGIN' });
               const hashedPassword = CryptoJS.SHA256(password).toString();
 
               const formData = {
