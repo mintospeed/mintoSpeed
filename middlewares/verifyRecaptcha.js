@@ -1,12 +1,14 @@
 const { RecaptchaEnterpriseServiceClient } = require('@google-cloud/recaptcha-enterprise');
+require("dotenv").config();
 
-const serviceAccount = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
 
 module.exports = async (req, res, next) => {
+    
     const token = req.body.token;
     if(!token){
         return res.json({ message: 'Recaptcha not found. Please try again.', type: 'negative' });
     }
+    const serviceAccount = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
 
     const params = {
         projectID: serviceAccount.project_id,        
