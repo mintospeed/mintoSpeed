@@ -93,30 +93,29 @@
             : '<i class="fa-solid fa-eye-slash"></i>'; // Hide password icon
         });
 
-        
+
 
         document.getElementById("submitBtn").onclick = async function () {
           document.getElementById("loader_container").style.display = "flex";
 
-        const phone = document.getElementById("phone").value.trim();
-        const password = document.getElementById("passwordInput").value.trim();
+          const phone = document.getElementById("phone").value.trim();
+          const password = document.getElementById("passwordInput").value.trim();
 
-        const phoneRegex = /^(\+91)?[6-9]\d{9}$/;
-        if (!phoneRegex.test(phone)) {
-          showAlert("Phone number is incorrect!", "negative");
-          document.getElementById("loader_container").style.display = "none";
-          return;
-        }
+          const phoneRegex = /^(\+91)?[6-9]\d{9}$/;
+          if (!phoneRegex.test(phone)) {
+            showAlert("Phone number is incorrect!", "negative");
+            document.getElementById("loader_container").style.display = "none";
+            return;
+          }
 
-        if (password === "" || password.length < 6) {
-          showAlert("Password not matched.", "negative");
-          document.getElementById("loader_container").style.display = "none";
-          return;
-        }
-
-          // recaptcha
-          grecaptcha.enterprise.ready(async () => {
-            try {
+          if (password === "" || password.length < 6) {
+            showAlert("Password not matched.", "negative");
+            document.getElementById("loader_container").style.display = "none";
+            return;
+          }
+          try {
+            // recaptcha
+            grecaptcha.enterprise.ready(async () => {
               const token = await grecaptcha.enterprise.execute('6Lfh15gqAAAAACwNWDMLGYgAsq38Wtof-CJPyxAA', { action: 'LOGIN' });
               const hashedPassword = CryptoJS.SHA256(password).toString();
 
@@ -156,13 +155,13 @@
                 showAlert('An error occurred. Please try again.', "negative");
                 return;
               }
-            }
-            catch (err) {
-              document.getElementById("loader_container").style.display = "none";
-              showAlert('Something went wrong to deal with reCaptcha. Please try again.', "negative");
-              return;
-            }
-          });
+            });
+          }
+          catch (err) {
+            document.getElementById("loader_container").style.display = "none";
+            showAlert('Something went wrong to deal with reCaptcha. Please try again.', "negative");
+            return;
+          }
         }
       });
     </script>

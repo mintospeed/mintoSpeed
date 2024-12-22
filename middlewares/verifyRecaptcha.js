@@ -64,7 +64,7 @@ module.exports = async (req, res, next) => {
             }
         }
         catch (err) {
-            return res.json({ message: 'Something went wrong with reCaptcha. Try again.', type: 'negative' });
+            return res.json({ message: 'Something went wrong with reCaptcha. Try again. Err : ' + err, type: 'negative' });
         }
     }
 };
