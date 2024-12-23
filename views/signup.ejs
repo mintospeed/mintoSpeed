@@ -27,8 +27,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
   <!-- hash -->
-  <script nonce="<%-nonce%>" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-
+  <!-- <script nonce="<%-nonce%>" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script> -->
 
   <!-- Firebase JS SDK -->
   <script nonce="<%-nonce%>" src="https://www.gstatic.com/firebasejs/9.12.1/firebase-app-compat.js"></script>
@@ -104,8 +103,8 @@
           </div>
 
           <button class="orderBtn" id="submitBtn">Submit</button>
-          <p style="text-align: center; font-size: 14px; margin-top: 20px;">Already have an account? <a href="/auth/login"
-              style="text-decoration: none;">Login</a></p>
+          <p style="text-align: center; font-size: 14px; margin-top: 20px;">Already have an account? <a
+              href="/auth/login" style="text-decoration: none;">Login</a></p>
           </formDiv>
 
         </div>
@@ -304,14 +303,13 @@
 
           if (isValid) {
             console.log("user2 : " + user);
-            if (user.phone && user.uid) {
-
-              const hashedPassword = CryptoJS.SHA256(password).toString();
-              console.log("Hashed Password:", hashedPassword);
+            if (user && user.phoneNumber && user.uid) {
+              // const hashedPassword = CryptoJS.SHA256(password).toString();
+              console.log("Hashed Password:", password);
 
               // Collect data from the formDiv
               const formData = {
-                user, fullName, email, streetAddress, city, pincode, hashedPassword
+                user, fullName, email, streetAddress, city, pincode, password
               };
               console.log("formData : " + formData);
 
@@ -351,8 +349,6 @@
 
             }
             else {
-              console.log("user : " + user);
-
               document.getElementById("loader_container").style.display = "none";
               showAlert('Please verify phone number by clicking on send OTP button.', "negative");
               return;

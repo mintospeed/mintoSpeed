@@ -27,8 +27,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
   <!-- hash -->
-  <script nonce="<%-nonce%>" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-
+  <!-- <script nonce="<%-nonce%>" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script> -->
 
   <!-- Firebase JS SDK -->
   <script nonce="<%-nonce%>" src="https://www.gstatic.com/firebasejs/9.12.1/firebase-app-compat.js"></script>
@@ -117,10 +116,10 @@
             // recaptcha
             grecaptcha.enterprise.ready(async () => {
               const token = await grecaptcha.enterprise.execute('6LfpL6MqAAAAADXXbESyGRXDNwTJdsZCuqO3ffIr', { action: 'LOGIN' });
-              const hashedPassword = CryptoJS.SHA256(password).toString();
+              // const hashedPassword = CryptoJS.SHA256(password).toString();
 
               const formData = {
-                phone, hashedPassword, token
+                phone, password, token
               };
 
               try {

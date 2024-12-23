@@ -10,26 +10,31 @@ const cookieParser = require('cookie-parser');
 const { v4: uuidv4 } = require('uuid'); // Unique user IDs
 const admin = require('firebase-admin');
 
+// Rate limiting
+const limiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: 1000, // Limit each IP to 100 requests per windowMs
+    message: 'Too many requests, please try again later.'
+});
+app.use(limiter);
 
 // Initialize Firebase Admin SDK only once
-    admin.initializeApp({
-        credential: admin.credential.cert({
-            projectId: process.env.FIREBASE_PROJECT_ID,
-            clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-            privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n')
-        }),
-        databaseURL: process.env.FIREBASE_DATABASE_URL,
-        storageBucket: process.env.FIREBASE_STORAGE_BUCKET
-    });
+admin.initializeApp({
+    credential: admin.credential.cert({
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+        privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n')
+    }),
+    databaseURL: process.env.FIREBASE_DATABASE_URL,
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET
+});
 
-const database = admin.database(); // Initialize the Realtime Database
-const firestore = admin.firestore(); // Initialize Firestore
 
 // Firebase injection middleware
 app.use((req, res, next) => {
     req.database = admin.database();
     req.firestore = admin.firestore();
-    req.Timestamp = admin.firestore.Timestamp; 
+    req.Timestamp = admin.firestore.Timestamp;
     req.auth = admin.auth();
     next();
 });
@@ -59,21 +64,6 @@ app.use((req, res, next) => {
     next();
 });
 
-
-// Rate limiting
-const limiter = rateLimit({
-    windowMs: 60 * 60 * 1000, // 1 hour
-    max: 1000, // Limit each IP to 100 requests per windowMs
-    message: 'Too many requests, please try again later.'
-});
-app.use(limiter);
-
-// Middleware to inject Firebase services in each request
-app.use((req, res, next) => {
-    req.database = database;
-    req.firestore = firestore;
-    next();
-});
 
 // Import route modules
 const authRoutes = require('./routes/auth');

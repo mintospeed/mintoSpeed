@@ -6,7 +6,7 @@ const verifyRecaptcha = require('../middlewares/verifyRecaptcha');
 
 const router = express.Router();
 const maxageTimeForUserId = 6 * 30 * 24 * 60 * 60 * 1000; // 6 months
-const maxageTimeForUserIdDelete = 1 * 1000; // 1 minute
+const maxageTimeForUserIdDelete = 1 * 1000; // 1 minute  
 
 // Render the signup page
 router.get('/', (req, res) => {
@@ -18,13 +18,13 @@ router.get('/login', (req, res) => {
 
 //add user into database
 router.post('/signup', async (req, res) => {
-    let { user, fullName, email, streetAddress, city, pincode, hashedPassword } = req.body;
+    let { user, fullName, email, streetAddress, city, pincode, password } = req.body;
 
     const userId = user.uid;
     const phone = user.phoneNumber;
-    console.log("signup begain : " + user + fullName + email + phone + streetAddress + city + pincode + hashedPassword);
+    console.log("signup begain : " + user + fullName + email + phone + streetAddress + city + pincode + password);
 
-    const hashedPassword1 = await hashPassword(hashedPassword);
+    const hashedPassword1 = await hashPassword(password);
 
 
     let validateInput = (input) => typeof input === 'string' && /^[a-zA-Z0-9_\- &,.]+$/.test(input);
@@ -41,22 +41,28 @@ router.post('/signup', async (req, res) => {
         return res.json({ type: 'negative', message: 'Invalid input values.' });
     }
 
-    res.cookie('userId', userId, {
-        maxAge: maxageTimeForUserId,
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',  // Sends the cookie only over HTTPS in production
-        sameSite: 'Strict'
-    });
 
-    let userFormData = { fullName: convertToLowercase(fullName), email, phone, streetAddress: convertToLowercase(streetAddress), city: convertToLowercase(city), pincode, password: hashedPassword1, dateTime: new Date() };
-    console.log(userFormData + userId);
-
-    // Reference to the user in Firestore
-    const userRef = req.firestore.collection('users').doc(userId);
+    const credentialData = { userId: userId, password: hashedPassword1, dateTime: new Date() };
+    const credentialRef = req.firestore.collection('credential').doc(userId);
     try {
-        await userRef.set(userFormData);
-        // return res.redirect('/profile');
-        return res.json({ message: 'Account created.', type: 'positive' });
+        await credentialRef.set(credentialData);
+
+        const userFormData = { fullName: convertToLowercase(fullName), email, phone, streetAddress: convertToLowercase(streetAddress), city: convertToLowercase(city), pincode, dateTime: new Date() };
+        const userRef = req.firestore.collection('users').doc(userId);
+        try {
+            await userRef.set(userFormData);
+            res.cookie('userId', userId, {
+                maxAge: maxageTimeForUserId,
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',  // Sends the cookie only over HTTPS in production
+                sameSite: 'Strict'
+            });
+            // return res.redirect('/profile');
+            return res.json({ message: 'Account created.', type: 'positive' });
+        } catch (error) {
+            console.error('User not added to database:', error);
+            return res.json({ message: 'Something went wrong to create account. Please try again.', type: 'negative' });
+        }
     } catch (error) {
         console.error('User not added to database:', error);
         return res.json({ message: 'Something went wrong to create account. Please try again.', type: 'negative' });
@@ -82,9 +88,10 @@ router.post('/logout', async (req, res) => {
 
 
 router.post('/login', verifyRecaptcha, async (req, res) => {
-    let { phone, hashedPassword } = req.body;
+    let { phone, password } = req.body;
     const captchaScore = req.captchaScore;
     console.log("captchaScore : " + captchaScore);
+    // const hashedPassword1 = await hashPassword(hashedPassword);
 
     const phoneRegex = /^(\+91)?[6-9]\d{9}$/;
     if (!phoneRegex.test(phone)) {
@@ -93,6 +100,9 @@ router.post('/login', verifyRecaptcha, async (req, res) => {
 
     if (!phone.startsWith('+91')) {
         phone = '+91' + phone;
+    }
+    if(password.length < 6){
+        return res.json({ message: 'Password not matched.', type: 'negative' });
     }
 
     try {
@@ -104,12 +114,12 @@ router.post('/login', verifyRecaptcha, async (req, res) => {
             const userId = userRecord.uid;
             console.log("userid : " + userId);
 
-            const userRef = req.firestore.collection('users').doc(userId);
+            const userRef = req.firestore.collection('credential').doc(userId);
             try {
                 const userData = await userRef.get();
                 if (userData.exists) {
                     const dbPassword = userData.data().password;
-                    const isPasswordValid = await verifyPassword(dbPassword, hashedPassword);
+                    const isPasswordValid = await verifyPassword(password, dbPassword);
                     if (isPasswordValid) {
                         res.cookie('userId', userId, {
                             maxAge: maxageTimeForUserId,
