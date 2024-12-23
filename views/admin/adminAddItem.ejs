@@ -136,7 +136,7 @@
         function validateText(input) {
           console.log("err 13.4");
           if (input && input.value !== undefined && /[.#\[\]$<>\/]/.test(input.value) || input.value.length < 1) {
-            showAlert("Blank or Input contains harmful characters like ., #, $, [, ], < or >. Please remove them.", "negative");
+            showAlert("Blank or Input contains invalid characters like ., #, $, [, ], < or >. Please remove them.", "negative");
             input.style.border = "1px solid red";
             isError = true;
             return null; // Indicate invalid input

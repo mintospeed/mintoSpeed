@@ -13,7 +13,7 @@ const admin = require('firebase-admin');
 // Rate limiting
 const limiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 1 hour
-    max: 1000, // Limit each IP to 100 requests per windowMs
+    max: 5000, // Limit each IP to 100 requests per windowMs
     message: 'Too many requests, please try again later.'
 });
 app.use(limiter);

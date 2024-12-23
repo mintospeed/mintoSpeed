@@ -7,30 +7,13 @@
 <body>
   <form id="phoneForm">
     <label for="phone">Phone Number:</label>
-    <input type="tel" id="phone" name="phone" placeholder="123-456-7890" required>
+    <input type="tel" id="phone" name="phone" placeholder="123-456-7890" autofocus required>
     <small id="error" style="color: red; display: none;">Invalid phone number format.</small>
     <button type="submit">Submit</button>
 </form>
 
 <script>
-    const form = document.getElementById('phoneForm');
-    const phoneInput = document.getElementById('phone');
-    const error = document.getElementById('error');
 
-    form.addEventListener('submit', (e) => {
-        e.preventDefault(); // Prevent form submission
-
-        const phoneNumber = phoneInput.value;
-        const phoneRegex = /^(\+91)?[6-9]\d{9}$/;
-if (phoneRegex.test(phoneNumber)) {
-    error.style.display = 'none';
-    alert('Phone number is valid!');
-    // Form submission logic or further actions here
-} else {
-    error.style.display = 'block';
-    error.textContent = 'Invalid phone number. Use +91xxxxxxxxxx or xxxxxxxxxx.';
-}
-    });
 </script>
 
 </body>
