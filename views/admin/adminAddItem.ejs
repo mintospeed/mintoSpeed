@@ -140,7 +140,7 @@
 
         function validateText(input) {
           console.log("err 13.4");
-          if (input && input.value !== undefined || input.value.length < 1) {
+          if (input && input.value !== undefined && input.value.length < 1) {
             showAlert("Blank input.", "negative");
             input.style.border = "1px solid red";
             isError = true;

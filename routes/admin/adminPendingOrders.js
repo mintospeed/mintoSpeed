@@ -186,7 +186,7 @@ router.post('/performAction', authenticateAdmin, async (req, res) => {
   if (action === 'Cancelled') {
     console.log("userId : " + userId + "cancelled action : " + action + ", orderId : " + orderId + ", cancelReason : " + cancelReason + ", deliveryDateTime" + deliveryDateTime);
 
-    let validateInput = (input) => typeof input === 'string' && /^[a-zA-Z0-9_\- &,.]+$/.test(input);
+    let validateInput = (input) => typeof input === 'string';
     if (!validateInput(cancelReason)) {
       return res.json({ message: "Cancel reason not validated. Write and try again.", type: "negative" });
     }
