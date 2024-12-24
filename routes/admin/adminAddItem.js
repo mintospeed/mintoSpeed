@@ -22,7 +22,7 @@ router.post('/add-item', authenticateAdmin, upload.single('itemImage'), async (r
     try {
         const { itemName, category, subcategory, minQty, maxQty, popularQty, popularPrice, packed, weightPriceCombinations, itemAbout } = req.body;
 
-        const isValidString = (str) => typeof str === 'string' && !/[.#\[\]$<>\/]/.test(str);
+        const isValidString = (str) => typeof str === 'string';
         const isValidNumber = (num) => !isNaN(num) && num > 0;
     
         if (!isValidString(itemName)) return res.json({ success: false, message: 'Invalid or missing itemName.' });

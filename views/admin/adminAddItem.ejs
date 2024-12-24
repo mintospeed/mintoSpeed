@@ -140,8 +140,8 @@
 
         function validateText(input) {
           console.log("err 13.4");
-          if (input && input.value !== undefined && /[.#\[\]$<>\/]/.test(input.value) || input.value.length < 1) {
-            showAlert("Blank or Input contains invalid characters like ., #, $, [, ], < or >. Please remove them.", "negative");
+          if (input && input.value !== undefined || input.value.length < 1) {
+            showAlert("Blank input.", "negative");
             input.style.border = "1px solid red";
             isError = true;
             return null; // Indicate invalid input
@@ -159,8 +159,8 @@
             return null;
           }
           const input = inputElement.value.trim();
-          if (/[.#\[\]$<>\/]/.test(input) || input.length < 1) {
-            showAlert("Blank or Input contains harmful characters like ., #, $, [, ], < or >. Please remove them.", "negative");
+          if (input.length < 1) {
+            showAlert("Blank input.", "negative");
             inputElement.style.border = "1px solid red";
             isError = true;
             return null; // Indicate invalid input
@@ -333,10 +333,7 @@
           let popularPrice = sanitizeInput(validatePrice(document.getElementById("popularPrice")));
           let packed = sanitizeInput(document.getElementById("packedSelect"));
           let itemAbout = document.getElementById("itemAbout").value.trim();
-          if(/[.#\[\]$<>\/]/.test(itemAbout)){
-            showAlert("About item contain invalid characters.", "negative");
-            return;
-          }
+          
 
           if (category == "new") {
             category = sanitizeInput(validateText(document.getElementById("newCategory")));
@@ -361,7 +358,7 @@
                 weightPriceCombinations.push({ weight, price });
               }
               else {
-                showAlert("Combined weight or price contain null or invalid character.", "negative");
+                showAlert("Combined weight or price contain null .", "negative");
               }
             });
           }
@@ -422,7 +419,7 @@
               });
           }
           else {
-            showAlert("Some of the input values are invalid.", "negative");
+            showAlert("Some of the input values are blank.", "negative");
             document.getElementById("loader_container").style.display = "none";
           }
         }
