@@ -20,7 +20,7 @@ router.get('/', authenticateAdmin, (req, res) => {
 // Route to handle adding a new item
 router.post('/add-item', authenticateAdmin, upload.single('itemImage'), async (req, res) => {
     try {
-        const { itemName, category, subcategory, minQty, maxQty, popularQty, popularPrice, packed, weightPriceCombinations } = req.body;
+        const { itemName, category, subcategory, minQty, maxQty, popularQty, popularPrice, packed, weightPriceCombinations, itemAbout } = req.body;
 
         const isValidString = (str) => typeof str === 'string' && /^[a-zA-Z0-9_\- &]+$/.test(str);
         const isValidNumber = (num) => !isNaN(num) && num > 0;
@@ -71,7 +71,8 @@ router.post('/add-item', authenticateAdmin, upload.single('itemImage'), async (r
             price: popularPrice,
             packed: packed === 'true',
             img: imageUrl,
-            options: weightPriceCombinations
+            options: weightPriceCombinations,
+            itemAbout: itemAbout
         });
 
         return res.json({ success: true });

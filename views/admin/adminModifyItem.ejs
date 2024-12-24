@@ -104,7 +104,7 @@
 
 
           <!-- Dynamic Weight and Price Combinations for Unpacked Items -->
-          <div id="weightPriceOptions" style="display: none;">
+          <div id="weightPriceOptions" style="display: none; background-color: whitesmoke; padding: 10px 7px;">
             <p class="weightPriceOptionsh4">Weight/Price Combinations</p>
             <div id="weightPriceContainer">
               <div class="weight-price-row">
@@ -113,6 +113,11 @@
               </div>
             </div>
             <button type="button" class="addPackedListBtn">New Row</button>
+          </div>
+
+          <div class="input-box">
+            <label>About Item or Description(optional)</label>
+            <textarea id="itemAbout" placeholder="Give detail info about item that customer can read.."></textarea>
           </div>
 
           <!-- Submit Button -->
@@ -233,6 +238,15 @@
           const weightPriceOptions = document.getElementById("weightPriceOptions");
           weightPriceOptions.style.display = packedSelect === "false" ? "block" : "none";
 
+          document.getElementById("minQty").value = "";
+          document.getElementById("maxQty").value = "";
+          document.getElementById("popularQty").value = "";
+          document.getElementById("weightPriceContainer").innerHTML = `
+                                <div class="weight-price-row">
+                <input type="text" class="weightInput" placeholder="Weight" required />
+                <input type="number" class="priceInput" placeholder="Price for Weight" required />
+              </div>`;
+
           if (packedSelect === "true") {
             document.getElementById("minQty").removeEventListener("input", validateQuantityInput);
             document.getElementById("maxQty").removeEventListener("input", validateQuantityInput);
@@ -297,7 +311,11 @@
           let popularQty;
           let popularPrice = sanitizeInput(validatePrice(document.getElementById("popularPrice")));
           let packed = sanitizeInput(document.getElementById("packedSelect"));
-
+          let itemAbout = document.getElementById("itemAbout").value.trim();
+          if(/[.#\[\]$<>\/]/.test(itemAbout)){
+            showAlert("About item contain invalid characters.", "negative");
+            return;
+          }
           console.log("submit1 : " + itemName + category + subcategory + popularPrice + packed);
 
           // Additional weight/price combinations for unpacked items
@@ -331,6 +349,7 @@
           const file = fileInput.files[0];
 
           if (itemName != null && category != null && subcategory != null && minQty != null && maxQty != null && popularPrice != null && popularQty != null && packed != null) {
+            document.getElementById("loader_container").style.display = "flex";
 
             const formData = new FormData();
             formData.append("itemName", itemName);
@@ -343,6 +362,7 @@
             formData.append("packed", packed === "true");
             formData.append("weightPriceCombinations", JSON.stringify(weightPriceCombinations)); // Send as JSON string
             formData.append("itemImage", file); // Image file
+            formData.append("itemAbout", itemAbout); 
 
             // Send the form data to the backend
             fetch('/dashboard/modifyItem/modify-item', {
@@ -354,19 +374,27 @@
                 if (data.success) {
                   showAlert("Item modify successfully!", "positive");
                   document.getElementById("itemForm").reset(); // Reset the form
+                  document.getElementById("weightPriceContainer").innerHTML = `
+                                <div class="weight-price-row">
+                <input type="text" class="weightInput" placeholder="Weight" required />
+                <input type="number" class="priceInput" placeholder="Price for Weight" required />
+              </div>`;
                   document.getElementById("img_container").innerHTML = '';
                 } else {
                   console.error("Error modify item:", data.message);
                   showAlert("Error in modify item.", "negative");
                 }
+                document.getElementById("loader_container").style.display = "none";
               })
               .catch(error => {
                 console.error("Error modify item:", error);
                 showAlert("Error in modify item..", "negative");
+                document.getElementById("loader_container").style.display = "none";
               });
           }
           else {
             showAlert("Something went wrong to submit the form.", "negative");
+            document.getElementById("loader_container").style.display = "none";
           }
         }
 
@@ -378,6 +406,7 @@
           console.log("er 24");
 
           const categorySelect = document.getElementById("categorySelect");
+          document.getElementById("loader_container").style.display = "flex";
 
           fetch('/dashboard/modifyItem/get-categories', {
             method: 'POST'
@@ -386,6 +415,7 @@
               if (!response.ok) {
                 console.log("er 25");
                 showAlert("Category not fetched.", "negative");
+                document.getElementById("loader_container").style.display = "none";
                 return;
               }
               return response.json();
@@ -399,10 +429,12 @@
                 categoryOption.textContent = category;
                 categorySelect.appendChild(categoryOption);
               });
+              document.getElementById("loader_container").style.display = "none";
             })
             .catch(error => {
               showAlert("Error fetching categories.", "negative");
               console.error("Error fetching categories:", error);
+              document.getElementById("loader_container").style.display = "none";
             });
         }
 
@@ -411,7 +443,10 @@
           console.log("er 17");
 
           const subcategorySelect = document.getElementById("subcategorySelect");
+          subcategorySelect.innerHTML = '<option hidden>Select Subcategory</option>';
+          
           console.log("er 18");
+          document.getElementById("loader_container").style.display = "flex";
 
           fetch('/dashboard/modifyItem/get-subcategories', {
             method: 'POST',
@@ -429,13 +464,50 @@
                 subcatOption.textContent = subcategory;
                 subcategorySelect.appendChild(subcatOption);
               });
+              document.getElementById("loader_container").style.display = "none";
             })
             .catch(error => {
               showAlert("Error fetching sub-categories.", "negative");
               console.error("Error fetching sub-categories:", error);
+              document.getElementById("loader_container").style.display = "none";
             });
         }
         console.log("er 20");
+
+         //item select
+         function populateItem(category, subcategory) {
+          console.log("er 25.001");
+          const itemSelect = document.getElementById("itemSelect");
+          itemSelect.innerHTML = '<option hidden>Select Item</option>';
+          
+          document.getElementById("loader_container").style.display = "flex";
+
+          fetch('/dashboard/modifyItem/get-items', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ category: category, subcategory: subcategory })
+          })
+            .then(response => response.json())
+            .then(items => {
+              console.log("er 25.0");
+              items.forEach(item => {
+                const subcatOption = document.createElement("option");
+                subcatOption.value = item;
+                subcatOption.textContent = item;
+                itemSelect.appendChild(subcatOption);
+              });
+              document.getElementById("loader_container").style.display = "none";
+            })
+            .catch(error => {
+              showAlert("Error fetching items.", "negative");
+              console.error("Error fetching items:", error);
+              document.getElementById("loader_container").style.display = "none";
+            });
+        }
+        console.log("er 25");
+
 
         // Initialize categories on page load
         window.onload = () => {
@@ -455,6 +527,7 @@
         // Populate items when subcategory changes
         document.getElementById("subcategorySelect").addEventListener("change", function () {
           console.log("er 25.3");
+    
           const selectedCategory = document.getElementById("categorySelect").value.trim();
           const selectedSubCategory = this.value.trim();
           populateItem(selectedCategory, selectedSubCategory);
@@ -475,7 +548,7 @@
         function loadItem(category, subcategory, itemName) {
           console.log("er 25.002");
 
-          const itemSelect = document.getElementById("itemSelect");
+          document.getElementById("loader_container").style.display = "flex";
 
           fetch('/dashboard/modifyItem/load-item', {
             method: 'POST',
@@ -486,6 +559,8 @@
           })
             .then(response => response.json())
             .then(item => {
+              document.getElementById("loader_container").style.display = "none";
+
               let flag = item.packed ? "true" : "false";
               document.getElementById("packedSelect").value = flag;
               togglePacked();
@@ -493,6 +568,7 @@
               document.getElementById("maxQty").value = item.max;
               document.getElementById("popularQty").value = item.qty;
               document.getElementById("popularPrice").value = item.price;
+              document.getElementById("itemAbout").value = item.itemAbout;
               document.getElementById("img_container").innerHTML = `<img height="100px" width="fit-content" src="${item.img}" alt="img" />`;
 
               if (!item.packed) {
@@ -533,39 +609,9 @@
             .catch(error => {
               showAlert("Error fetching item data.", "negative");
               console.error("Error fetching item:", error);
+              document.getElementById("loader_container").style.display = "none";
             });
         }
-
-
-        //item select
-        function populateItem(category, subcategory) {
-          console.log("er 25.001");
-
-          const itemSelect = document.getElementById("itemSelect");
-
-          fetch('/dashboard/modifyItem/get-items', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ category: category, subcategory: subcategory })
-          })
-            .then(response => response.json())
-            .then(items => {
-              console.log("er 25.0");
-              items.forEach(item => {
-                const subcatOption = document.createElement("option");
-                subcatOption.value = item;
-                subcatOption.textContent = item;
-                itemSelect.appendChild(subcatOption);
-              });
-            })
-            .catch(error => {
-              showAlert("Error fetching items.", "negative");
-              console.error("Error fetching items:", error);
-            });
-        }
-        console.log("er 25");
 
       });
 
@@ -613,11 +659,18 @@
         padding: 10px 10px;
       }
 
+      textarea{
+        width: 100%;
+    margin-top: 7px;
+    padding: 5px;
+      }
 
       .container2 .form {
         margin-top: 20px;
       }
-
+#weightPriceOptions{
+        margin-top: 7px;
+      }
       .form .input-box,
       .weightPriceOptionsh4 {
         width: 100%;
@@ -629,7 +682,9 @@
         color: #333;
         font-size: 0.9rem;
       }
-
+      .weightPriceOptionsh4{
+        margin-top: 5px;
+      }
       .form :where(.input-box input, .select-box, .input-box select, .weight-price-row input) {
         position: relative;
         height: 40px;
